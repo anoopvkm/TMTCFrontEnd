@@ -1,5 +1,6 @@
 /**
  * This class deals with the entire AX.25 frame
+ * @author Anoop R Santhosh
  * @version 1.0
  */
 public class AX25Frame {

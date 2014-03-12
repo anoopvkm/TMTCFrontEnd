@@ -3,6 +3,7 @@
  * This class deals with the a telecommand packet
  * It inherets from AX.25 frame .
  * Not a lot of things are drastically different.
+ * @author Anoop R Santhosh 
  * @version 1.0
  */
 public class AX25Telecommand extends AX25Frame {
