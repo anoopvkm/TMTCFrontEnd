@@ -30,7 +30,8 @@ public class AX25Frame {
 	public AX25Frame(){
 		this.DstAddress =  new AX25AddressField();
 		this.SrcAddress = new AX25AddressField();
-		this.SetInformationField (new byte[0]);	}
+		this.SetInformationField (new byte[0]);	
+	}
 	
 	/**
 	 * AX.25 frame constructor
@@ -112,8 +113,8 @@ public class AX25Frame {
 		frame[15] = AX25Frame.ProtocolIdentifier;
 		
 		// Information Field
-		byte[] informationField = this.GetInformationField ();
-        System.arraycopy(informationField, 0, frame, 16, informationField.length);
+		//byte[] informationField = this.GetInformationField ();
+        //System.arraycopy(informationField, 0, frame, 16, informationField.length);
 		
 		return frame;
 	}

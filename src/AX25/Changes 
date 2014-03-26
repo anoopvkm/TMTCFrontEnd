@@ -1,0 +1,1 @@
+In AX.25 packet telecommand we have decided to add an extra 8 bit field called counter. 

@@ -8,6 +8,9 @@
  */
 public class AX25Telecommand extends AX25Frame {
 	
+	
+	// Telecommand packet counter
+	public byte TCCounter = 0;
 	/**
 	 * Constructor for AX.25 telecommand
 	 */
@@ -21,6 +24,7 @@ public class AX25Telecommand extends AX25Frame {
 	 */
 	public AX25Telecommand(byte[] frame){
 		super(frame);
+		this.TCCounter = super.GetInformationField()[0];
 	}
 	
 	/**
@@ -30,6 +34,7 @@ public class AX25Telecommand extends AX25Frame {
 	 */
 	public AX25Telecommand(byte[] frame, int offset){
          super (frame, offset);
+         this.TCCounter = super.GetInformationField()[0];
     }
 
 	/**
@@ -38,7 +43,8 @@ public class AX25Telecommand extends AX25Frame {
 	 * @param dstAddress : source address field
 	 * @param informationField : Information Field
 	 */
-	public AX25Telecommand(AX25AddressField dstAddress, AX25AddressField srcAddress, byte[] informationField){
+	public AX25Telecommand(AX25AddressField dstAddress, AX25AddressField srcAddress, byte[] informationField,int counter){
+		
          super (dstAddress, srcAddress, informationField);
     }
 

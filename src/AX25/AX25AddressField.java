@@ -14,7 +14,7 @@ public class AX25AddressField {
 	
 	
 	// SSID Mask
-    private static final byte SSIDMask = 0x60;
+    private static final byte SSIDMask = 0;
 	/**
 	 * AX.25 Adrress Field constructor 
 	 */
