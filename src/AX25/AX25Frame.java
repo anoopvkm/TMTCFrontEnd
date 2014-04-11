@@ -13,10 +13,10 @@ public class AX25Frame {
 	public AX25AddressField SrcAddress;
 	
 	// Control Bits
-	private static byte ControlBits = 0x03;
+	protected static byte ControlBits = 0x03;
 	
 	// Protocol Identifier (no layer 3 protocol implemented )
-	private static byte ProtocolIdentifier = (byte)0xF0;
+	protected static byte ProtocolIdentifier = (byte)0xF0; // standard value // this has been changed to implement ack option
 	
 	// Information field
 	private byte[] _informationField;
@@ -84,6 +84,14 @@ public class AX25Frame {
           this.SrcAddress = srcAddress;
           this.SetInformationField (informationField);
      }
+	 
+	/**
+	  * This  method sets the protocol identifier field - for using to identify packet type
+	  * @param type , a byte field
+	  */
+	 public void SetIdentifier(byte type){
+		 this.ProtocolIdentifier = type;
+	 }
 	/**
 	 * This method gives the total length of the frame
 	 * @param 

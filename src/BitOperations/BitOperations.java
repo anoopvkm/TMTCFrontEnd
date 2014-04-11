@@ -32,7 +32,7 @@ public class BitOperations {
 	}
 	
 	/**
-	 * Function for converting a 8 bit unsigned byte to an integer
+	 * Function for converting an unsigned byte to an integer
 	 * @param number
 	 * @return integer
 	 */
