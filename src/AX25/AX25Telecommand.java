@@ -69,6 +69,13 @@ public class AX25Telecommand extends AX25Frame {
 	public void SetCounter(int counter){
 		this.TCCounter = BitOperations.IntegerToUnsignedbyte8(counter);
 	}
+	
+	/**
+	 * Function to get the counter field as integer
+	 */
+	public int GetCounter(){
+		return BitOperations.UnsignedBytetoInteger8(this.TCCounter);
+	}
 	/**
 	 * Function to get frame length
 	 */

@@ -38,5 +38,12 @@ public class FrontEnd {
 		
 	}
 	
+	/**
+	 * function which listens to MCS system 
+	 * 
+	 */
+	public static void ListenToMCS(){
+		// TODO 
+	}
 	
 }
