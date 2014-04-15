@@ -101,7 +101,16 @@ public class TCTransmitter {
 	 * Function to be called in case of a time out
 	 */
 	public void TimeOut(){
-		
+		switch(state){
+			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
+									ResendPacketQueue.addAll(OutStandingPacketMap.values());
+									OutStandingPacketMap.clear();
+									this.state = State.WAIT_FOR_TRANS;
+									break;
+									
+			default : // TODO tracedc
+									
+		}
 	}
 	/**
 	 * Function to be called in case of negative ACK
@@ -118,6 +127,7 @@ public class TCTransmitter {
 									}
 									ResendPacketQueue.clear();
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
+									OutStandingPacketMap.clear();
 									this.state = State.WAIT_FOR_TRANS;
 									break;
 									
@@ -133,6 +143,18 @@ public class TCTransmitter {
 	 */
 	public void TransmitterON(){
 		this.TransmitterState = true;
+		switch(state){
+			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
+									ResendPacketQueue.addAll(OutStandingPacketMap.values());
+									ConstructAck();
+									this.state = State.READY;
+									break;
+									
+			case WAIT_FOR_TRANS:  	ConstructAck();
+									this.state = State.READY;
+									break;
+			default : // TODO 
+		}
 	}
 	
 	/**
@@ -143,39 +165,45 @@ public class TCTransmitter {
 	}
 	
 	/**
+	 * Function to construct ack for packets received for them to transmitted
+	 */
+	private void ConstructAck(){
+		// TODO
+	}
+	/**
 	 * Function to dispatch all AX.25 packets
 	 */
 	private void dispatchPackets(){
-		if(TransmitterState){
-			// send ack first
-			dropToSocket(currentAck.ToByteArray());
+		
+		// send ack first
+		dropToSocket(currentAck.ToByteArray());
 			
-			// resend packets
-			for(int i =0;i<ResendPacketQueue.size();i++){
+		// resend packets
+		for(int i =0;i<ResendPacketQueue.size();i++){
 			
-				int Tcounter = ResendPacketQueue.get(i).GetCounter();
-				int Val = SendCounter.get(Tcounter);
-				SendCounter.remove(Tcounter);
-				Val++;
-				SendCounter.put(Tcounter, Val);
-				OutStandingPacketMap.put(Tcounter, ResendPacketQueue.get(i));
-				dropToSocket(ResendPacketQueue.get(i).ToByteArray());
-			}
-	
-			ResendPacketQueue.clear();
-			
-			// sending new packets
-			for(int i =0;i<EncodedPacketQueue.size();i++){
-	
-				SendCounter.put(EncodedPacketQueue.get(i).GetCounter(), 1);
-				OutStandingPacketMap.put(EncodedPacketQueue.get(i).GetCounter(), EncodedPacketQueue.get(i));
-				dropToSocket(EncodedPacketQueue.get(i).ToByteArray());
-			}
-			
-			EncodedPacketQueue.clear();
-			
-			this.state = State.WAIT_FOR_ACK;
+			int Tcounter = ResendPacketQueue.get(i).GetCounter();
+			int Val = SendCounter.get(Tcounter);
+			SendCounter.remove(Tcounter);
+			Val++;
+			SendCounter.put(Tcounter, Val);
+			OutStandingPacketMap.put(Tcounter, ResendPacketQueue.get(i));
+			dropToSocket(ResendPacketQueue.get(i).ToByteArray());
 		}
+	
+		ResendPacketQueue.clear();
+			
+		// sending new packets
+		for(int i =0;i<EncodedPacketQueue.size();i++){
+	
+			SendCounter.put(EncodedPacketQueue.get(i).GetCounter(), 1);
+			OutStandingPacketMap.put(EncodedPacketQueue.get(i).GetCounter(), EncodedPacketQueue.get(i));
+			dropToSocket(EncodedPacketQueue.get(i).ToByteArray());
+		}
+			
+		EncodedPacketQueue.clear();
+			
+		this.state = State.WAIT_FOR_ACK;
+		
 	}
 	
 	/**

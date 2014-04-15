@@ -55,9 +55,7 @@ public class AX25FrameIdentification {
               // TODO add exception
          }
 		 
-		 if (((byte)(framePart[offset] & 0x07)) != AX25FrameIdentification.SpareBits){
-             // TODO add exception
-         }
+         this.VirtualChannelID = (byte)((framePart[offset] >> 3) & 0x07);
 	}
 	
 	/**

@@ -44,6 +44,10 @@ public class AX25Telemetry extends AX25Frame{
 	 */
 	public AX25Telemetry(byte [] frame){
 		super(frame);
+		this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
+		this.MasterFrameCount = (this.GetInformationField())[1];
+		this.VirtualChannelFrameCount = (this.GetInformationField())[2];
+		this.FirstHeaderPointer = (this.GetInformationField())[3];
 	}
 	
 	/**
