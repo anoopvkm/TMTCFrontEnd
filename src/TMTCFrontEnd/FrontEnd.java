@@ -22,7 +22,7 @@ public class FrontEnd {
 	TMReceiver _receiver;
 	
 	// SQL Client
-	SQLClient _sqlClient;
+	
 	
 	// Router Client
 	RouterClient _routerClient;
@@ -36,14 +36,48 @@ public class FrontEnd {
 		_receiver = new TMReceiver();
 		
 		
+		
+		
 	}
 	
+	/**
+	 * Function which starts the operations of the TMTC front end
+	 * Starts all threads
+	 */
+	public void Start(){
+		// Thread which listens to MCS for packets
+		Thread MCSListener = new Thread(new Runnable() {
+			public void run(){
+				ListenToMCS();
+			}
+		});
+		MCSListener.start();
+		Thread ControllerThread = new Thread(new Runnable(){
+			public void run(){
+				ControlOperations();
+			}
+		});
+		ControllerThread.start();
+	}
 	/**
 	 * function which listens to MCS system 
 	 * 
 	 */
-	public static void ListenToMCS(){
+	private  void ListenToMCS(){
 		// TODO 
+		// do a test implementation here 
+		while(true){
+			ApplicationData data = new ApplicationData();
+			
+			_transmitter.receivePacketTCTransmitter(data);
+			break;
+		}
 	}
 	
+	/** 
+	 * Function which controlls the operations of the TMTC front end
+	 */
+	private void ControlOperations(){
+			
+	}
 }

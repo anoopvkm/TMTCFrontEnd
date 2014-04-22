@@ -16,10 +16,13 @@ public class AX25Frame {
 	protected static byte ControlBits = 0x03;
 	
 	// Protocol Identifier (no layer 3 protocol implemented )
-	protected static byte ProtocolIdentifier = (byte)0xF0; // standard value // this has been changed to implement ack option
+	public static byte ProtocolIdentifier = (byte)0xF0; // standard value // this has been changed to implement ack option
 	
 	// Information field
 	private byte[] _informationField;
+	
+	// CRC field
+	public byte[] _crc;
 	
 	// Header Length in bytes
 	public static int HeaderLength = 16;
@@ -30,7 +33,8 @@ public class AX25Frame {
 	public AX25Frame(){
 		this.DstAddress =  new AX25AddressField();
 		this.SrcAddress = new AX25AddressField();
-		this.SetInformationField (new byte[0]);	
+		this.SetInformationField (new byte[0]);
+		this._crc = new byte[2];
 	}
 	
 	/**
@@ -50,7 +54,7 @@ public class AX25Frame {
 		this();
 		this.DstAddress = new AX25AddressField(frame,offset);
 		this.SrcAddress = new AX25AddressField(frame,offset + 7);
-		
+		this._crc = new byte[2];
 		// checking for control bits
 		if(frame[offset + 15 ] != AX25Frame.ControlBits){
 			// TODO exception throw
@@ -60,6 +64,8 @@ public class AX25Frame {
 		if(frame[offset + 15] != AX25Frame.ProtocolIdentifier){
 			// TODO exception throw
 		}
+		// the protocol identifier field has been modified to represent if the packet is an ack packet or not
+		AX25Frame.ProtocolIdentifier = frame[offset+15];
 		
 		// information field
 		if(frame.length - offset - AX25Frame.HeaderLength > 0){
@@ -83,6 +89,7 @@ public class AX25Frame {
           this.DstAddress = dstAddress;
           this.SrcAddress = srcAddress;
           this.SetInformationField (informationField);
+          this._crc = new byte[2];
      }
 	 
 	/**
@@ -106,6 +113,34 @@ public class AX25Frame {
 	 * @return a byte array of the values
 	 */
 	public byte[] ToByteArray() {
+		byte[] frame = new byte[this.getFrameLength()+2];
+		
+		// destination address field
+		System.arraycopy(this.DstAddress.ToByteArray(false), 0, frame, 0, 7);
+		
+		// Source address
+		System.arraycopy(this.SrcAddress.ToByteArray(true), 0, frame, 7, 7);
+		
+		// Control bits
+		frame[14] = AX25Frame.ControlBits;
+		
+		// Protocol Identifier
+		frame[15] = AX25Frame.ProtocolIdentifier;
+		
+		// Information Field
+		byte[] informationField = this.GetInformationField ();
+        System.arraycopy(informationField, 0, frame, 16, informationField.length);
+		
+        // CRC
+        System.arraycopy(_crc, 0, frame,this.getFrameLength() , 2);
+        
+		return frame;
+	}
+	
+	/** This method converts the frame to a byte array with out crc field
+	 * @return a byte array
+	 */
+	public byte[] ToByteArrayWithoutCRC() {
 		byte[] frame = new byte[this.getFrameLength()];
 		
 		// destination address field
@@ -121,8 +156,8 @@ public class AX25Frame {
 		frame[15] = AX25Frame.ProtocolIdentifier;
 		
 		// Information Field
-		//byte[] informationField = this.GetInformationField ();
-        //System.arraycopy(informationField, 0, frame, 16, informationField.length);
+		byte[] informationField = this.GetInformationField ();
+        System.arraycopy(informationField, 0, frame, 16, informationField.length);
 		
 		return frame;
 	}

@@ -13,7 +13,14 @@ public class BitOperations {
 	 */
 	public static String byteToBinaryString8(byte number){
 		if(number >= 0 && number <=127 ){
-			return "0"+Integer.toBinaryString(number);
+			String temp = Integer.toBinaryString(number);
+			int no_zero = 8 -temp.length();
+			
+			for(int i =0 ;i < no_zero;i++){
+				temp = "0"+temp;
+		
+			}
+			return temp;
 		}else{
 			return Integer.toBinaryString(number).substring(Integer.SIZE - Byte.SIZE);
 		}
@@ -39,5 +46,18 @@ public class BitOperations {
 	public static int UnsignedBytetoInteger8(byte number){
 		String Trep = byteToBinaryString8(number);
 		return Integer.valueOf(Trep, 2);
+	}
+	
+	/**
+	 * Function for converting a 16 bit number to an unsignedinterger
+	 * @param byte []
+	 * @ return integer
+	 */
+	public static int UnsignedBytetoInteger16(byte [] number){
+		String s1 = byteToBinaryString8(number[0]);
+		String s2 = byteToBinaryString8(number[1]);
+
+		String fin = s1+s2;
+		return Integer.valueOf(fin, 2);
 	}
 }

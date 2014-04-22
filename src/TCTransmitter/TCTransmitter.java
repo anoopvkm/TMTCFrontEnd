@@ -3,11 +3,15 @@ package TCTransmitter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import AX25.AX25AddressField;
 import AX25.AX25Telecommand;
 import BitOperations.BitOperations;
+import CRC.CRC16CCITT;
+import SQLClient.SQLClient;
 import TMTCFrontEnd.ApplicationData;
+import TMTCFrontEnd.MissionConstants;
 
 /**
  * This class deals with entire TC Transmitter
@@ -20,10 +24,10 @@ public class TCTransmitter {
 	private Queue<ApplicationData> IncomingPacketQueue ;
 	
 	// queue for storing encoded AX.25 telecommand packets
-	private LinkedList<AX25Telecommand> EncodedPacketQueue;
+	private LinkedBlockingQueue<AX25Telecommand> EncodedPacketQueue;
 	
 	// queue for storing 
-	private LinkedList<AX25Telecommand> ResendPacketQueue;
+	private LinkedBlockingQueue<AX25Telecommand> ResendPacketQueue;
 	
 	// outstanding Packet queue
 	private HashMap<Integer,AX25Telecommand> OutStandingPacketMap;
@@ -43,20 +47,24 @@ public class TCTransmitter {
 	// Variable to keep track of frame count
 	private int frameCounter;
 	
+	// To archieve AX25 frames
+	SQLClient _sqlClient ; 
+	
 	// constructor
 	public TCTransmitter(){
 
-		state = State.READY;
+		state = State.WAIT_FOR_TRANS;
 		frameCounter = 0;
-		EncodedPacketQueue = new LinkedList<AX25Telecommand>();
-		ResendPacketQueue = new LinkedList<AX25Telecommand>();
+		EncodedPacketQueue = new LinkedBlockingQueue<AX25Telecommand>();
+		ResendPacketQueue = new LinkedBlockingQueue<AX25Telecommand>();
 		OutStandingPacketMap = new HashMap<Integer,AX25Telecommand>();
 		SendCounter = new HashMap<Integer,Integer>();
 		TransmitterState = false;
+		_sqlClient = new SQLClient();
 	}
 	
 	/*
-	 * Function to receives data, encodes it wiithout counter and stores it into the encoded queue
+	 * Function to receives data, encodes it without counter and stores it into the encoded queue
 	 * @param data, an application data object
 	 */
 	public void receivePacketTCTransmitter(ApplicationData data){
@@ -79,7 +87,11 @@ public class TCTransmitter {
 		// Encoding the data to AX.25 protocol
 		AX25Telecommand EncodedPacket =  new AX25Telecommand(dstAddress,srcAddress,data.GetData(),frameCounter);
 		
-		// TODO write SQL function to write to DB
+		byte [] crc = new byte[2];
+		crc = CRC16CCITT.generateCRC(EncodedPacket.ToByteArrayWithoutCRC());
+		System.arraycopy(crc, 0, EncodedPacket._crc, 0, 2);
+		_sqlClient.ArchieveAX25TeleCommand(EncodedPacket);
+		
 		
 		// Adding the packet to encoded packets Queue
 		this.EncodedPacketQueue.add(EncodedPacket);
@@ -88,12 +100,19 @@ public class TCTransmitter {
 		
 	}
 	/**
+	 * Function to start the operations of a receiver
+	 */
+	public void start(){
+		
+	}
+	/**
 	 * Function to be called when a positive beacon has been received indicating transmission can be done
 	 */
 	public void positiveBeacon(){
 		switch(state){
-			case READY : dispatchPackets();
-						 break; 
+			case READY : 
+						dispatchPackets();
+						break; 
 			default    : // TODO a trace statement 
 		}
 	}
@@ -102,7 +121,7 @@ public class TCTransmitter {
 	 */
 	public void TimeOut(){
 		switch(state){
-			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
+			case WAIT_FOR_ACK :	
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
 									OutStandingPacketMap.clear();
 									this.state = State.WAIT_FOR_TRANS;
@@ -125,7 +144,7 @@ public class TCTransmitter {
 											OutStandingPacketMap.remove(counter);
 										}
 									}
-									ResendPacketQueue.clear();
+						
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
 									OutStandingPacketMap.clear();
 									this.state = State.WAIT_FOR_TRANS;
@@ -144,7 +163,7 @@ public class TCTransmitter {
 	public void TransmitterON(){
 		this.TransmitterState = true;
 		switch(state){
-			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
+			case WAIT_FOR_ACK :		
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
 									ConstructAck();
 									this.state = State.READY;
@@ -177,30 +196,49 @@ public class TCTransmitter {
 		
 		// send ack first
 		dropToSocket(currentAck.ToByteArray());
-			
+		
+		//to hold the packets which cannot be send bcoz another packet of same counter was sent already
+		LinkedList<AX25Telecommand> HoldList = new LinkedList<AX25Telecommand>();
 		// resend packets
-		for(int i =0;i<ResendPacketQueue.size();i++){
+		while(!ResendPacketQueue.isEmpty()){
 			
-			int Tcounter = ResendPacketQueue.get(i).GetCounter();
+			AX25Telecommand Frame = ResendPacketQueue.poll();
+			int Tcounter = Frame.GetCounter();
+			if(OutStandingPacketMap.containsKey(Tcounter)){
+				HoldList.add(Frame);
+				continue;
+			}
 			int Val = SendCounter.get(Tcounter);
 			SendCounter.remove(Tcounter);
+			if( Val <= MissionConstants.MaxResends){
+				AnnouncePacketDrop();
+				continue;
+			}
 			Val++;
 			SendCounter.put(Tcounter, Val);
-			OutStandingPacketMap.put(Tcounter, ResendPacketQueue.get(i));
-			dropToSocket(ResendPacketQueue.get(i).ToByteArray());
+			OutStandingPacketMap.put(Tcounter, Frame);
+			dropToSocket(Frame.ToByteArray());
 		}
-	
-		ResendPacketQueue.clear();
+		ResendPacketQueue.addAll(HoldList);
+		HoldList.clear();
+		
 			
 		// sending new packets
-		for(int i =0;i<EncodedPacketQueue.size();i++){
-	
-			SendCounter.put(EncodedPacketQueue.get(i).GetCounter(), 1);
-			OutStandingPacketMap.put(EncodedPacketQueue.get(i).GetCounter(), EncodedPacketQueue.get(i));
-			dropToSocket(EncodedPacketQueue.get(i).ToByteArray());
+		while(!EncodedPacketQueue.isEmpty()){
+
+			AX25Telecommand Frame = EncodedPacketQueue.poll();
+			if(OutStandingPacketMap.containsKey(Frame.GetCounter())){
+				HoldList.add(Frame);
+				continue;
+			}
+			SendCounter.put(Frame.GetCounter(), 1);
+		
+			OutStandingPacketMap.put(Frame.GetCounter(), Frame);
+			dropToSocket(Frame.ToByteArray());
 		}
 			
-		EncodedPacketQueue.clear();
+		EncodedPacketQueue.addAll(HoldList);
+		HoldList.clear();
 			
 		this.state = State.WAIT_FOR_ACK;
 		
@@ -211,5 +249,12 @@ public class TCTransmitter {
 	 */
 	private void dropToSocket(byte [] frame){
 		
+	}
+	
+	/**
+	 * Function to display on a UI packets which were dropped after maxresend attempts
+	 */
+	private void AnnouncePacketDrop(){
+		// TODO trace and UI
 	}
 }

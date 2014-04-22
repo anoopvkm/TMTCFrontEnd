@@ -1,7 +1,10 @@
 package TMReceiver;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import SQLClient.SQLClient;
 import TMTCFrontEnd.MissionConstants;
 
 import AX25.AX25Telemetry;
@@ -17,19 +20,44 @@ public class TMReceiver {
 
 	// to store the list of byte stream objects which has been Decoded into AX25 Telemtery 
 	private LinkedList<AX25Telemetry> DecodedPackets ;
-	private LinkedList<Integer> ReceivedPacketCounters;
+	
+	// to store the counters of the packets received
+	private LinkedBlockingQueue<Integer> ReceivedPacketCounters;
+	
+	// to store all reassembly units
+	private ArrayList<ReAssemblyUnit> ReAssemblyUnitList;
+	
+	// to store all the received bytearrays
+	private LinkedBlockingQueue<ByteArray> receivedFrames;
+	
+	// SQL client to archieve telemetry
+	SQLClient _sqlClient ;
+	
+	// Currently received ACK
+	AX25Telemetry curAck ;
+	
+	// to indicate that an ack was received
+	boolean AckReceived ;
 	
 	public TMReceiver(){
 		this.DecodedPackets = new LinkedList<AX25Telemetry>();
-		this.ReceivedPacketCounters = new LinkedList<Integer>();
+		this.ReceivedPacketCounters = new LinkedBlockingQueue<Integer>();
+		this.ReAssemblyUnitList = new ArrayList<ReAssemblyUnit>();
+		for(int i =0 ;i< MissionConstants.NoVCs ;i++){
+			ReAssemblyUnit temp = new ReAssemblyUnit(i);
+			ReAssemblyUnitList.add(temp);
+		}
+		receivedFrames = new LinkedBlockingQueue<ByteArray>();
+		_sqlClient = new SQLClient();
+		AckReceived = false;
 	}
 	/**
-	 * Function to receive a new telemetry packet and decode it and add it to the queue
+	 * Function to accept a new telemetry packet and decode it and add it to the queue
 	 * @param frame
 	 */
-	public void receivePacket(byte [] frame){
+	public AX25Telemetry acceptPacket(byte [] frame){
 		AX25Telemetry Frame = new AX25Telemetry(frame);
-		DecodedPackets.add(Frame);
+		return Frame;
 	}
 	
 	/**
@@ -44,8 +72,82 @@ public class TMReceiver {
 		return false;
 	}
 	
-	private void ArchieveTelemetry(byte [] frame){
-		// TODO write to sql database
+	/**
+	 * Function to listen to GS on a socket
+	 * 
+	 */
+	private void ListenToGS(){
+		// TODO write the socket code here
+		while(true){
+			// TODO add it to incoming telemetryqueue.
+		}
+	}
+	
+	/**
+	 * Function which does all operations on the received packets
+	 */
+	private void ReceiverController(){
+		while(true){
+			
+			if(!receivedFrames.isEmpty()){
+				ByteArray frame = receivedFrames.poll();
+				if(!checkCRC(frame.data)){
+					// TODO trace
+					continue;
+				}
+				final AX25Telemetry DecodedFrame = acceptPacket(frame.data);
+				
+				if(!checkSRCandDESTAddr(DecodedFrame)){
+					// TODO trace
+					continue;
+				}
+				
+				ArchieveTelemetry(DecodedFrame);
+				
+				if(DecodedFrame.ProtocolIdentifier == 0x03){
+					curAck = DecodedFrame;
+				}
+				
+				addToAckQueue(DecodedFrame);
+				
+				Thread VCsplitThread = new Thread (new Runnable () {
+					public void run(){
+						SplitToVirtualChannels(DecodedFrame);
+					}
+				});
+				VCsplitThread.start();
+				
+				
+			}
+		}
+	}
+	
+	/**
+	 * Function which starts all the threads in receiver part
+	 * 
+	 */
+	public void start(){
+		Thread GSListenerThread = new Thread (new Runnable () {
+			public void run(){
+				ListenToGS();
+			}
+		});
+		GSListenerThread.start();
+		Thread ReceiverMainThread = new Thread ( new Runnable () {
+			public void run(){
+				ReceiverController();
+			}
+		});
+		ReceiverMainThread.start();
+		
+	}
+	
+	/**
+	 * Function to archieve a telemetry packet
+	 * @param Frame
+	 */
+	private void ArchieveTelemetry(AX25Telemetry Frame){
+		_sqlClient.ArchieveAX25TeleMetry(Frame);
 	} 
 	
 	/**
@@ -69,9 +171,26 @@ public class TMReceiver {
 	
 	/**
 	 * Function to add counters to the list of received packet coutners 
+	 * @param AX25 telemetry
 	 */
 	private void addToAckQueue(AX25Telemetry frame){
 		int counter = BitOperations.UnsignedBytetoInteger8(frame.MasterFrameCount);
 		ReceivedPacketCounters.add(counter);
+	}
+	
+	/**
+	 * Function to split to different virtual channels and and called Reassembly unit
+	 * @param Ax25telemetry
+	 */
+	private void SplitToVirtualChannels(AX25Telemetry frame){
+		int vcid = BitOperations.UnsignedBytetoInteger8(frame.FrameIdentification.VirtualChannelID);
+		ReAssemblyUnitList.get(vcid).ReassemblePacket(frame);
+	}
+	
+	/**
+	 * Function to print message in window
+	 */
+	private void AnnouncePacketDrop(String errmsg){
+		// TODO dialog box with message
 	}
 }

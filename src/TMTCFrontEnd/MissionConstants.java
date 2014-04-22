@@ -12,6 +12,10 @@ public class MissionConstants {
 	// the satellite SSID
 	public static byte satSSID  = 0;
 	
+	public static int NoVCs = 8 ;
+	
+	public static int MaxResends = 5;
+	
 	/**
 	 *  Function to set the ground station call sign
 	 */
@@ -39,5 +43,19 @@ public class MissionConstants {
 	 */
 	public static void SetsatSSID(byte ssid){
 		satSSID = ssid;
+	}
+	
+	/**
+	 * Function to set number of virtual channels (by default 8 )
+	 */
+	public static void SetVirtualChannelNumber(int num){
+		NoVCs = 8 ;
+	}
+	
+	/**
+	 * Funcion to set the maximum number of resends of a packet
+	 */
+	public static void SetMaxResends(int maxresends){
+		MaxResends = maxresends;
 	}
 }
