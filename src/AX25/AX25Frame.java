@@ -179,7 +179,7 @@ public class AX25Frame {
 	 * This method sets the information field of the frame
 	 * @param informationField a byte array of information field values
 	 */
-	protected void SetInformationField(byte[] informationField){
+	public void SetInformationField(byte[] informationField){
          this._informationField = informationField;
     }
 	

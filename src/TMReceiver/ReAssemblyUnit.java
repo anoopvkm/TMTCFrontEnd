@@ -20,7 +20,7 @@ public class ReAssemblyUnit {
 	HashMap<Integer,ReAssembleBuffer> BufferMapMax;
 	
 	// LinkedList of Completed Packet 
-	LinkedList<ReAssembleBuffer> Completed ;
+	public LinkedList<ReAssembleBuffer> Completed ;
 	
 	// constructor
 	public ReAssemblyUnit(int vcID){
@@ -35,7 +35,9 @@ public class ReAssemblyUnit {
 	 * @param frame
 	 */
 	public void ReassemblePacket(AX25Telemetry frame){
-		if(frame.FirstHeaderPointer == 0xFF){
+		
+		int FirstHeaderPointer = BitOperations.UnsignedBytetoInteger8(frame.FirstHeaderPointer);
+		if(FirstHeaderPointer == 255){
 			boolean minFlag = false;
 			boolean maxFlag = false;
 			int VcCounter = BitOperations.UnsignedBytetoInteger8(frame.VirtualChannelFrameCount);
@@ -110,12 +112,13 @@ public class ReAssemblyUnit {
 				}
 			}
 			int nextCounter = (VcCounter == 255 )? 0 : VcCounter + 1;
+		
 			if(BufferMapMin.containsKey(nextCounter)){
 				ReAssembleBuffer nextBuffer = BufferMapMin.get(nextCounter);
 				minFlag = true;
-				byte [] tmpArray = new byte[502 + nextBuffer.data.length];
-				System.arraycopy(nextBuffer.data, 0, tmpArray, 502,nextBuffer.data.length );
-				System.arraycopy(frame.Data, 0 , tmpArray, 0, 502);
+				byte [] tmpArray = new byte[frame.Data.length + nextBuffer.data.length];
+				System.arraycopy(nextBuffer.data, 0, tmpArray, frame.Data.length,nextBuffer.data.length );
+				System.arraycopy(frame.Data, 0 , tmpArray, 0, frame.Data.length);
 				nextBuffer.lengthRead = tmpArray.length;
 				nextBuffer.data = new byte[tmpArray.length];
 				System.arraycopy(tmpArray, 0, nextBuffer.data, 0, tmpArray.length);
@@ -133,6 +136,7 @@ public class ReAssemblyUnit {
 				newBuffer.middle = true;
 				int maxRead = ( frame.Data.length < 502) ? frame.Data.length : 502 ;
 				newBuffer.data = new byte[maxRead];
+				newBuffer.lengthRead = maxRead;
 				System.arraycopy(frame.Data, 0, newBuffer.data, 0,maxRead);
 				BufferMapMin.put(VcCounter, newBuffer);
 				BufferMapMax.put(VcCounter, newBuffer);
@@ -170,11 +174,11 @@ public class ReAssemblyUnit {
 				
 			}
 		}
-		else if(frame.FirstHeaderPointer == 0xFE){
+		else if(FirstHeaderPointer == 254){
 			// do nothing
 		}
 		else {
-			int FirstHeaderPointer = BitOperations.UnsignedBytetoInteger8(frame.FirstHeaderPointer);
+			
 			int VcCounter = BitOperations.UnsignedBytetoInteger8(frame.VirtualChannelFrameCount);
 			int PrevCounter = (VcCounter == 0) ? 255 : (VcCounter - 1);
 			if(BufferMapMax.containsKey(PrevCounter)){
@@ -190,6 +194,9 @@ public class ReAssemblyUnit {
 				newBuffer.minIdx = VcCounter;
 				newBuffer.maxIdx  = VcCounter; // TODO
 				newBuffer.lengthRead = FirstHeaderPointer;
+				newBuffer.data = new byte[FirstHeaderPointer];
+				System.arraycopy(frame.Data, 0,newBuffer.data , 0, FirstHeaderPointer);
+				BufferMapMin.put(VcCounter, newBuffer);
 				
 				
 			}
@@ -201,12 +208,12 @@ public class ReAssemblyUnit {
 				ReAssembleBuffer newBuffer = new ReAssembleBuffer();
 				newBuffer.minIdx = VcCounter;
 				newBuffer.maxIdx = -1;
-				if(502 - nextPointer >= 6){
+				if(frame.Data.length - nextPointer >= 6){
 					byte [] pLength = new byte[2];
 					pLength[0] = frame.Data[nextPointer + 4];
 					pLength[1] = frame.Data[nextPointer + 5];
 					newBuffer.PacketLength = BitOperations.UnsignedBytetoInteger16(pLength);
-					if(502 - nextPointer > newBuffer.PacketLength){
+					if(frame.Data.length - nextPointer > newBuffer.PacketLength){
 						newBuffer.data = new byte[newBuffer.PacketLength];
 						newBuffer.lengthRead = newBuffer.PacketLength;
 						System.arraycopy(frame.Data,nextPointer , newBuffer.data, 0, newBuffer.PacketLength);
@@ -214,25 +221,99 @@ public class ReAssemblyUnit {
 						packetsLeft = true;
 						nextPointer = nextPointer + newBuffer.PacketLength;
 					}
-					else if (502 - nextPointer == newBuffer.PacketLength){
+					else if (frame.Data.length - nextPointer == newBuffer.PacketLength){
 						newBuffer.data = new byte[newBuffer.PacketLength];
-						newBuffer.lengthRead = 502-nextPointer;
+						newBuffer.lengthRead = frame.Data.length - nextPointer;
 						System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0, newBuffer.lengthRead);
 						Completed.add(newBuffer);
 					}
 					else{
-						newBuffer.data = new byte[newBuffer.PacketLength];
-						newBuffer.lengthRead = 502 - nextPointer;
-						System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0, newBuffer.lengthRead);
-						BufferMapMin.put(VcCounter, newBuffer);
+						int nextCounter = (VcCounter == 255 )? 0 : VcCounter + 1;
+						
+						if(BufferMapMin.containsKey(nextCounter)){
+							ReAssembleBuffer tPac = BufferMapMin.get(nextCounter);
+							if(newBuffer.PacketLength == (frame.Data.length - nextPointer + tPac.lengthRead )){
+								byte [] tData = new byte[newBuffer.PacketLength];
+								System.arraycopy(frame.Data, nextPointer, tData, 0, frame.Data.length - nextPointer);
+								System.arraycopy(tPac.data, 0, tData, frame.Data.length - nextPointer, tPac.lengthRead);
+								tPac.data =  new byte[newBuffer.PacketLength];
+								tPac.PacketLength = newBuffer.PacketLength;
+								System.arraycopy(tData, 0, tPac.data, 0, newBuffer.PacketLength);
+								BufferMapMin.remove(nextCounter);
+								Completed.add(tPac);
+							}
+							else{
+								byte [] tData = new byte[newBuffer.PacketLength];
+								System.arraycopy(frame.Data, nextPointer, tData, 0, frame.Data.length - nextPointer);
+							
+								System.arraycopy(tPac.data, 0, tData, frame.Data.length - nextPointer, tPac.lengthRead);
+								tPac.data = new byte[newBuffer.PacketLength];
+								tPac.PacketLength = newBuffer.PacketLength;
+								tPac.lengthRead = tPac.lengthRead + frame.Data.length - nextPointer;
+								System.arraycopy(tData, 0, tPac.data, 0, newBuffer.PacketLength);
+								BufferMapMin.remove(nextCounter);
+								if(BufferMapMax.containsKey(tPac.maxIdx)){
+									BufferMapMax.remove(tPac.maxIdx);
+								}
+								BufferMapMax.put(tPac.maxIdx, tPac);
+							}
+						}else{
+							newBuffer.data = new byte[newBuffer.PacketLength];
+							newBuffer.lengthRead = frame.Data.length - nextPointer;
+							System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0, newBuffer.lengthRead);
+							BufferMapMax.put(VcCounter, newBuffer);
+						}
 					}
 					
 				}
 				else{
-					newBuffer.data = new byte[502 - nextPointer];
-					newBuffer.lengthRead = 502 - nextPointer;
-					System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0,newBuffer.lengthRead);
-					BufferMapMin.put(VcCounter, newBuffer);
+					int nextCounter = (VcCounter == 255 )? 0 : VcCounter + 1;
+					
+					if(BufferMapMin.containsKey(nextCounter)){
+						ReAssembleBuffer tPac = BufferMapMin.get(nextCounter);
+						if( (frame.Data.length - nextPointer + tPac.lengthRead ) >= 6){
+							byte [] tData = new byte[frame.Data.length - nextPointer + tPac.lengthRead ];
+							System.arraycopy(frame.Data, nextPointer, tData, 0, frame.Data.length - nextPointer);
+							System.arraycopy(tPac.data, 0, tData, frame.Data.length - nextPointer, tPac.lengthRead);
+							
+							byte [] lenbyte = new byte[2];
+							lenbyte[0] = tData[4];
+							lenbyte[1] = tData[5];
+							int pclen = BitOperations.UnsignedBytetoInteger16(lenbyte);
+							tPac.PacketLength = pclen;
+							tPac.data =  new byte[pclen];
+							System.arraycopy(tData, 0, tPac.data, 0, pclen);
+						
+							BufferMapMin.remove(nextCounter);
+							
+							if(pclen == (frame.Data.length - nextPointer + tPac.lengthRead ))
+								Completed.add(tPac);
+							else{
+								tPac.lengthRead += (frame.Data.length - nextPointer);
+								if(BufferMapMax.containsKey(tPac.maxIdx)){
+									BufferMapMax.remove(tPac.maxIdx);
+								}
+								BufferMapMax.put(tPac.maxIdx, tPac);
+							}
+						}
+						else{
+							byte [] tData = new byte[newBuffer.PacketLength];
+							System.arraycopy(frame.Data, nextPointer, tData, 0, frame.Data.length - nextPointer);
+							System.arraycopy(tPac.data, 0, tData, frame.Data.length - nextPointer, tPac.lengthRead);
+							tPac.data = new byte[newBuffer.PacketLength];
+							System.arraycopy(tData, 0, tPac.data, 0, newBuffer.PacketLength);
+							BufferMapMin.remove(nextCounter);
+							if(BufferMapMax.containsKey(tPac.maxIdx)){
+								BufferMapMax.remove(tPac.maxIdx);
+							}
+							BufferMapMax.put(tPac.maxIdx, tPac);
+						}
+					}else{
+						newBuffer.data = new byte[newBuffer.PacketLength];
+						newBuffer.lengthRead = frame.Data.length - nextPointer;
+						System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0, newBuffer.lengthRead);
+						BufferMapMax.put(VcCounter, newBuffer);
+					}
 				}
 			}
 		}

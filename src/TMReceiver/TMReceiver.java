@@ -22,7 +22,7 @@ public class TMReceiver {
 	private LinkedList<AX25Telemetry> DecodedPackets ;
 	
 	// to store the counters of the packets received
-	private LinkedBlockingQueue<Integer> ReceivedPacketCounters;
+	public LinkedBlockingQueue<Integer> ReceivedPacketCounters;
 	
 	// to store all reassembly units
 	private ArrayList<ReAssemblyUnit> ReAssemblyUnitList;
@@ -31,13 +31,13 @@ public class TMReceiver {
 	private LinkedBlockingQueue<ByteArray> receivedFrames;
 	
 	// SQL client to archieve telemetry
-	SQLClient _sqlClient ;
+	private SQLClient _sqlClient ;
 	
 	// Currently received ACK
-	AX25Telemetry curAck ;
+	public AX25Telemetry curAck ;
 	
 	// to indicate that an ack was received
-	boolean AckReceived ;
+	public boolean AckReceived ;
 	
 	public TMReceiver(){
 		this.DecodedPackets = new LinkedList<AX25Telemetry>();
@@ -106,6 +106,7 @@ public class TMReceiver {
 				
 				if(DecodedFrame.ProtocolIdentifier == 0x03){
 					curAck = DecodedFrame;
+					break;
 				}
 				
 				addToAckQueue(DecodedFrame);

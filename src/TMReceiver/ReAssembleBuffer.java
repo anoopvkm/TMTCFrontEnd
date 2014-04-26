@@ -6,10 +6,10 @@ package TMReceiver;
  */
 public class ReAssembleBuffer {
 
-	int minIdx = 0;
-	int maxIdx = 0;
-	int lengthRead = 0;
-	int PacketLength = 0;
-	boolean middle = false;
-	byte [] data ;
+	public int minIdx = 0;
+	public int maxIdx = 0;
+	public int lengthRead = 0;
+	public int PacketLength = 0;
+	public boolean middle = false;
+	public byte [] data ;
 }

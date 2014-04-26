@@ -11,6 +11,10 @@ import java.util.LinkedList;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import com.mysql.jdbc.ResultSet;
+
+import TMReceiver.ByteArray;
+
 
 import AX25.AX25Telecommand;
 import AX25.AX25Telemetry;
@@ -79,7 +83,8 @@ public class SQLClient {
 				  Date date = new Date();
 				  Timestamp ts = new Timestamp(date.getTime());
 				  Blob b = new SerialBlob(arcList.get(i).ToByteArray());
-				//  b.setBytes(1, arcList.get(i).ToByteArray());
+				//b.setBytes(1, arcList.get(i).ToByteArray());
+				
 				  
 				  String query =  "INSERT INTO AX25Telecommand (TimeStamp , Frame ) VALUES ('"+ts +"','"+  b + "') ";
 				  stmt.executeUpdate(query);
@@ -132,5 +137,50 @@ public class SQLClient {
 			}
 		});
 		writeToSQLThread.start();
+	}
+	
+	/**
+	 * Function to return list of arrays which comes in a time range
+	 * @param start , the start timestamp
+	 * @param end, the end timestamp
+	 * @return List of bytearrays 
+	 * @throws SQLException 
+	 */
+	public LinkedList<ByteArray> retrieveAX25Telemetry(String start, String end) throws SQLException{
+		LinkedList<ByteArray> list = new LinkedList<ByteArray>();
+		 Connection conn = null;
+		  Statement stmt = null;
+		  
+		  try {
+			 
+			  Class.forName("com.mysql.jdbc.Driver");
+			  
+			  conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			 
+			  stmt = conn.createStatement();
+			  
+			  String query =  "SELECT * FROM AX25Telemetry WHERE Counter = 2012";
+			  java.sql.ResultSet rs = stmt.executeQuery(query);
+		     
+			  while (rs.next()){
+				  System.out.println("fff");
+				//(assuming you have a ResultSet named RS)
+				  Blob blob = rs.getBlob("TimeStamp");
+
+				  int blobLength = (int) blob.length();  
+				  byte[] blobAsBytes = blob.getBytes(1, blobLength);
+				  System.out.println(blobAsBytes.length);
+				  //release the blob and free up memory. (since JDBC 4.0)
+			
+			  }
+			  conn.close();
+		     
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return list;
 	}
 }

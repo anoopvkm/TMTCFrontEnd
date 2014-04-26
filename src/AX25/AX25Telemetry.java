@@ -46,16 +46,20 @@ public class AX25Telemetry extends AX25Frame{
 		super(frame);
 		if(this.ProtocolIdentifier == 0x03){
 		
+			int DataLen = this.GetInformationField().length - 4 ;
+			this.Data = new byte[DataLen];
+			System.arraycopy(this.GetInformationField(), 0 , this.Data, 0, DataLen);
 		}
 		else{
 			this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
 			this.MasterFrameCount = (this.GetInformationField())[1];
 			this.VirtualChannelFrameCount = (this.GetInformationField())[2];
 			this.FirstHeaderPointer = (this.GetInformationField())[3];
+			int DataLen = this.GetInformationField().length - 4 ;
+			this.Data = new byte[DataLen];
+			System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
 		}
-		int DataLen = this.GetInformationField().length - 4 ;
-		this.Data = new byte[DataLen];
-		System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
+		
 	}
 	
 	/**
@@ -67,16 +71,19 @@ public class AX25Telemetry extends AX25Frame{
 		super(frame,offset);
 		if(this.ProtocolIdentifier == 0x03){
 			
+			int DataLen = this.GetInformationField().length - 4 ;
+			this.Data = new byte[DataLen];
+			System.arraycopy(this.GetInformationField(), 0 , this.Data, 0, DataLen);
 		}
 		else{
 			this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
 			this.MasterFrameCount = (this.GetInformationField())[1];
 			this.VirtualChannelFrameCount = (this.GetInformationField())[2];
 			this.FirstHeaderPointer = (this.GetInformationField())[3];
+			int DataLen = this.GetInformationField().length - 4 ;
+			this.Data = new byte[DataLen];
+			System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
 		}
-		int DataLen = this.GetInformationField().length - 4 ;
-		this.Data = new byte[DataLen];
-		System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
 	}
 	
 	/**
@@ -101,5 +108,13 @@ public class AX25Telemetry extends AX25Frame{
 	    this.Data = data;
 	    this.FrameStatus = frameStatus;
 	    this.time = time;
+	}
+	
+	/**
+	 * Function to set Data field of telemetry packet
+	 * @param byte array
+	 */
+	public void SetDataField(byte [] data){
+		this.Data = data;
 	}
 }

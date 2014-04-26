@@ -50,7 +50,12 @@ public class TCTransmitter {
 	// To archieve AX25 frames
 	SQLClient _sqlClient ; 
 	
+	// packets received by the receiver
+	public LinkedBlockingQueue<Integer> recvFrames;
 	// constructor
+	
+	// flag to indicate if the current Ack is valid
+	private boolean validAck;
 	public TCTransmitter(){
 
 		state = State.WAIT_FOR_TRANS;
@@ -61,6 +66,9 @@ public class TCTransmitter {
 		SendCounter = new HashMap<Integer,Integer>();
 		TransmitterState = false;
 		_sqlClient = new SQLClient();
+		recvFrames = new LinkedBlockingQueue<Integer>();
+		validAck = false;
+		
 	}
 	
 	/*
@@ -90,12 +98,13 @@ public class TCTransmitter {
 		byte [] crc = new byte[2];
 		crc = CRC16CCITT.generateCRC(EncodedPacket.ToByteArrayWithoutCRC());
 		System.arraycopy(crc, 0, EncodedPacket._crc, 0, 2);
+		
 		_sqlClient.ArchieveAX25TeleCommand(EncodedPacket);
 		
 		
 		// Adding the packet to encoded packets Queue
 		this.EncodedPacketQueue.add(EncodedPacket);
-		
+	
 		
 		
 	}
@@ -109,6 +118,7 @@ public class TCTransmitter {
 	 * Function to be called when a positive beacon has been received indicating transmission can be done
 	 */
 	public void positiveBeacon(){
+		
 		switch(state){
 			case READY : 
 						dispatchPackets();
@@ -162,8 +172,9 @@ public class TCTransmitter {
 	 */
 	public void TransmitterON(){
 		this.TransmitterState = true;
+	
 		switch(state){
-			case WAIT_FOR_ACK :		
+			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
 									ConstructAck();
 									this.state = State.READY;
@@ -181,13 +192,30 @@ public class TCTransmitter {
 	 */
 	public void TransmitterOFF(){
 		this.TransmitterState = false;
+		switch(state){
+			case READY : // stop the dispatch thread ?
+						this.state = State.WAIT_FOR_ACK;
+						break;
+			default    : //TODO 
+		}
 	}
 	
 	/**
 	 * Function to construct ack for packets received for them to transmitted
 	 */
 	private void ConstructAck(){
-		// TODO
+		byte [] acks = new byte[recvFrames.size()];
+		int  i =0;
+		while(i < acks.length){
+			acks[i] = BitOperations.IntegerToUnsignedbyte8(recvFrames.poll());
+			i++;
+		}
+		currentAck = new AX25Telecommand();
+		currentAck.SetInformationField(acks);
+		currentAck.ProtocolIdentifier = 0x03;
+		recvFrames.clear();
+		validAck = true;
+		
 	}
 	/**
 	 * Function to dispatch all AX.25 packets
@@ -195,8 +223,11 @@ public class TCTransmitter {
 	private void dispatchPackets(){
 		
 		// send ack first
-		dropToSocket(currentAck.ToByteArray());
-		
+		if(validAck){
+			validAck = false;
+			
+			dropToSocket(currentAck.ToByteArray());
+		}
 		//to hold the packets which cannot be send bcoz another packet of same counter was sent already
 		LinkedList<AX25Telecommand> HoldList = new LinkedList<AX25Telecommand>();
 		// resend packets
@@ -222,7 +253,7 @@ public class TCTransmitter {
 		ResendPacketQueue.addAll(HoldList);
 		HoldList.clear();
 		
-			
+		System.out.println("enclength "+EncodedPacketQueue.size());	
 		// sending new packets
 		while(!EncodedPacketQueue.isEmpty()){
 
@@ -248,7 +279,7 @@ public class TCTransmitter {
 	 * Function to drop packets at the socket
 	 */
 	private void dropToSocket(byte [] frame){
-		
+		System.out.println(frame.length);
 	}
 	
 	/**
