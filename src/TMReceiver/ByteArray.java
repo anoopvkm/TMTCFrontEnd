@@ -5,5 +5,5 @@ package TMReceiver;
  *
  */
 public class ByteArray {
-	byte [] data;
+	public byte [] data;
 }

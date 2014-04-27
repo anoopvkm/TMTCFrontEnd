@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
 import SQLClient.SQLClient;
 import TMTCFrontEnd.MissionConstants;
 
@@ -28,7 +31,7 @@ public class TMReceiver {
 	private ArrayList<ReAssemblyUnit> ReAssemblyUnitList;
 	
 	// to store all the received bytearrays
-	private LinkedBlockingQueue<ByteArray> receivedFrames;
+	public LinkedBlockingQueue<ByteArray> receivedFrames; // TODO change to private
 	
 	// SQL client to archieve telemetry
 	private SQLClient _sqlClient ;
@@ -38,6 +41,10 @@ public class TMReceiver {
 	
 	// to indicate that an ack was received
 	public boolean AckReceived ;
+	
+	// UI to display receiver messages
+	JFrame msgFrame ;
+	JTextArea msg;
 	
 	public TMReceiver(){
 		this.DecodedPackets = new LinkedList<AX25Telemetry>();
@@ -50,6 +57,15 @@ public class TMReceiver {
 		receivedFrames = new LinkedBlockingQueue<ByteArray>();
 		_sqlClient = new SQLClient();
 		AckReceived = false;
+		
+		msgFrame = new JFrame("Receiver Messages ");
+		msg = new JTextArea();
+		msg.setColumns(70);
+		msg.setRows(40);
+		msgFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        msgFrame.setSize(350,300);
+        msgFrame.add(msg);
+        msgFrame.setVisible(true);
 	}
 	/**
 	 * Function to accept a new telemetry packet and decode it and add it to the queue
@@ -88,29 +104,38 @@ public class TMReceiver {
 	 */
 	private void ReceiverController(){
 		while(true){
-			
+	
 			if(!receivedFrames.isEmpty()){
+			
+
 				ByteArray frame = receivedFrames.poll();
 				if(!checkCRC(frame.data)){
-					// TODO trace
+				
+					String errmsg = "Packet Dropped : CRC Check failed";
+					AnnounceMessage(errmsg);
 					continue;
 				}
+
 				final AX25Telemetry DecodedFrame = acceptPacket(frame.data);
-				
+	
 				if(!checkSRCandDESTAddr(DecodedFrame)){
 					// TODO trace
 					continue;
 				}
 				
 				ArchieveTelemetry(DecodedFrame);
-				
+		
 				if(DecodedFrame.ProtocolIdentifier == 0x03){
 					curAck = DecodedFrame;
-					break;
+					
+					AckReceived =  true;
+					continue;
 				}
 				
+		
 				addToAckQueue(DecodedFrame);
-				
+			
+				AnnounceMessage("Packet "+ BitOperations.UnsignedBytetoInteger8(DecodedFrame.MasterFrameCount));
 				Thread VCsplitThread = new Thread (new Runnable () {
 					public void run(){
 						SplitToVirtualChannels(DecodedFrame);
@@ -163,8 +188,16 @@ public class TMReceiver {
 		if(frame.SrcAddress.CallSign.equals(MissionConstants.satCallsign) && (frame.SrcAddress.Ssid == MissionConstants.satSSID)){
 			satellitecheck = true;
 		}
+		else{
+			String errmsg = "Packet No : "+BitOperations.UnsignedBytetoInteger8(frame.MasterFrameCount)+" Dropped : Wrong satellite Address";
+			AnnounceMessage(errmsg);
+		}
 		if(frame.DstAddress.CallSign.equals(MissionConstants.gsCallsign) && (frame.DstAddress.Ssid == MissionConstants.gsSSID)){
 			groundstationcheck = true;
+		}
+		else{
+			String errmsg = "Packet No : "+BitOperations.UnsignedBytetoInteger8(frame.MasterFrameCount)+" Dropped : Wrong ground station address";
+			AnnounceMessage(errmsg);
 		}
 		
 		return satellitecheck && groundstationcheck;
@@ -186,12 +219,28 @@ public class TMReceiver {
 	private void SplitToVirtualChannels(AX25Telemetry frame){
 		int vcid = BitOperations.UnsignedBytetoInteger8(frame.FrameIdentification.VirtualChannelID);
 		ReAssemblyUnitList.get(vcid).ReassemblePacket(frame);
+		while(!ReAssemblyUnitList.get(vcid).Completed.isEmpty()){
+			dropToMCS(ReAssemblyUnitList.get(vcid).Completed.getFirst());
+			ReAssemblyUnitList.get(vcid).Completed.removeFirst();
+		}
+		
 	}
 	
 	/**
 	 * Function to print message in window
 	 */
-	private void AnnouncePacketDrop(String errmsg){
-		// TODO dialog box with message
+	private void AnnounceMessage(String errmsg){
+		msg.append("\n"+errmsg);
+//		System.out.println(errmsg);
+	}
+	
+	/**
+	 * Function which drops packets to MCS
+	 */
+	private  void dropToMCS(ReAssembleBuffer frame){
+		// TODO drop to MCS
+
+		String message = " New packed reassembled ";
+		AnnounceMessage(message);
 	}
 }

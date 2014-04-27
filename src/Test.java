@@ -14,22 +14,31 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.mysql.jdbc.Blob;
+
+import ReplayController.ReplayController;
 import SQLClient.SQLClient;
 import TMReceiver.ReAssemblyUnit;
 import TMTCFrontEnd.FrontEnd;
+import TMTCFrontEnd.MissionConstants;
 import Trace.Trace;
+import AX25.AX25AddressField;
+import AX25.AX25FrameIdentification;
+import AX25.AX25FrameStatus;
 import AX25.AX25Telemetry;
 import BitOperations.BitOperations;
+import CRC.CRC16CCITT;
 
 
 public class Test {
 
 	  public static void main(String a[]) throws SQLException, InterruptedException, IOException {
 		  Trace.SetTraceFile("/home/anoop/blah");
-		  //FrontEnd test = new FrontEnd();
+		 FrontEnd test = new FrontEnd();
 		  
-		  //test.Simulator();
-		  //test.Start();
+		
+		  test.Start();
+		  test.Simulator();
 		  //ReassemblyUnitTest1();
 		  //ReassemblyUnitTest2();
 		  //ReassemblyUnitTest3();
@@ -37,9 +46,42 @@ public class Test {
 		  //ReassemblyUnitTest5();
 		  //ReassemblyUnitTest6();
 		  //ReassemblyUnitTest7();
-		 // WriteTelemetryTest();
-		  ReadingFromSQLtest();
+		  //WriteTelemetryTest();
+		 // ReadingFromSQLtest();
 		  //BlobTests();
+	//	  SQLClient.ByteArrayTest();
+	//	  ReplayContollerTests();
+	 // PacketCreationTests();
+	  }
+	  public static void ReplayContollerTests(){
+		  ReplayController temp = new ReplayController();
+		  temp.Display();
+	  }
+	  
+	  public static void PacketCreationTests(){
+			AX25AddressField src = new AX25AddressField(MissionConstants.satCallsign,MissionConstants.satSSID);
+			AX25AddressField dest = new AX25AddressField(MissionConstants.gsCallsign,MissionConstants.gsSSID);
+			byte [] data = new byte[4];
+			for(int i = 0;i<4;i++){
+				data[i] = (byte)i;
+			}
+			
+			AX25Telemetry temp = new AX25Telemetry(dest, src, new AX25FrameIdentification(), (byte)4, (byte)4,(byte)0,  data, new AX25FrameStatus(), 10);
+			temp.ProtocolIdentifier = 0x03;
+			
+			
+			byte [] crc = new byte[2];
+			crc = CRC16CCITT.generateCRC(temp.ToByteArrayWithoutCRC());
+			temp._crc[0] = crc[0];
+			temp._crc[1] = crc[1];
+			byte [] ggg = temp.ToByteArray();
+			AX25Telemetry aaa = new AX25Telemetry(temp.ToByteArray());
+			
+			for(int i =0;i<aaa.Data.length;i++){
+				System.out.println(aaa.Data[i]);
+			}
+	
+			System.out.println(BitOperations.UnsignedBytetoInteger8(aaa.MasterFrameCount));
 	  }
 	  
 	  public static void AX25TelemetryEncodingTest(){
@@ -268,20 +310,22 @@ public class Test {
 	  public static void WriteTelemetryTest(){
 		  AX25Telemetry tFrame3 = new AX25Telemetry();
 		  tFrame3.FirstHeaderPointer = BitOperations.IntegerToUnsignedbyte8(255);
-		  byte[] data3 = new byte[2];
+		  byte[] data3 = new byte[10];
 		  data3[0] = BitOperations.IntegerToUnsignedbyte8(9);
 		  tFrame3.VirtualChannelFrameCount = 1;
 		  tFrame3.SetDataField(data3);
 		  SQLClient tem = new SQLClient();
+		  System.out.println(tFrame3.ToByteArray()[14]);
+		 
 		  tem.ArchieveAX25TeleMetry(tFrame3);
 	  }
 	  public static void ReadingFromSQLtest() throws SQLException{
 		  SQLClient temp = new SQLClient();
-		  temp.retrieveAX25Telemetry("", "");
+		  temp.retrieveAX25Telemetry("2014-04-26 00:00:00 ", "2014-04-26 10:00:00");
 	  }
 	  
-	  public static void BlobTests(){
-		  
+	  public static void BlobTests() throws SQLException{
+		
 	  }
 
 }

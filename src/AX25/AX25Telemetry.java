@@ -48,7 +48,7 @@ public class AX25Telemetry extends AX25Frame{
 		
 			int DataLen = this.GetInformationField().length - 4 ;
 			this.Data = new byte[DataLen];
-			System.arraycopy(this.GetInformationField(), 0 , this.Data, 0, DataLen);
+			System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
 		}
 		else{
 			this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
@@ -108,6 +108,13 @@ public class AX25Telemetry extends AX25Frame{
 	    this.Data = data;
 	    this.FrameStatus = frameStatus;
 	    this.time = time;
+	    byte [] currentIF = new byte[this._informationField.length];
+	    this._informationField = new byte[ 4 + data.length];
+	    this._informationField[0] = frameIdentification.ToByteArray()[0];
+	    this._informationField[1] = masterFrameCount;
+	    this._informationField[2] = virtualChannelFrameCount;
+	    this._informationField[3] = firstHeaderPointer;
+	    System.arraycopy(data, 0, this._informationField, 4, data.length);
 	}
 	
 	/**

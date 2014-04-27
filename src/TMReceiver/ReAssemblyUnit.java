@@ -22,12 +22,15 @@ public class ReAssemblyUnit {
 	// LinkedList of Completed Packet 
 	public LinkedList<ReAssembleBuffer> Completed ;
 	
+	// to keep track of number of packets reassmebled
+	public int reassembledPackets;
 	// constructor
 	public ReAssemblyUnit(int vcID){
 		this.vcid = vcID;
 		this.BufferMapMin = new HashMap<Integer,ReAssembleBuffer>();
 		this.BufferMapMax = new HashMap<Integer,ReAssembleBuffer>();
 		this.Completed = new LinkedList<ReAssembleBuffer>();
+		this.reassembledPackets = 0;
 	}
 	
 	/**
@@ -53,6 +56,7 @@ public class ReAssemblyUnit {
 					temp.lengthRead = temp.lengthRead + maxRead;
 					if(temp.lengthRead == PacketLen){
 						Completed.add(temp);
+						reassembledPackets++;
 						BufferMapMax.remove(PrevCounter);
 						BufferMapMin.remove(temp.minIdx);
 						
@@ -81,6 +85,7 @@ public class ReAssemblyUnit {
 						temp.lengthRead = temp.lengthRead + maxRead;
 						if(temp.lengthRead == temp.PacketLength){
 							Completed.add(temp);
+							reassembledPackets++;
 							BufferMapMax.remove(PrevCounter);
 							BufferMapMin.remove(temp.minIdx);
 							
@@ -156,6 +161,7 @@ public class ReAssemblyUnit {
 					if(newBuffer.lengthRead == firstBuffer.PacketLength){
 						newBuffer.PacketLength = firstBuffer.PacketLength;
 						Completed.add(newBuffer);
+						reassembledPackets++;
 						BufferMapMin.remove(VcCounter);
 						BufferMapMax.remove(VcCounter);
 					}else{
@@ -185,6 +191,7 @@ public class ReAssemblyUnit {
 				ReAssembleBuffer bufferedData = BufferMapMax.get(PrevCounter);
 				System.arraycopy(frame.Data, 0,bufferedData.data, bufferedData.lengthRead, FirstHeaderPointer);
 				Completed.add(bufferedData);
+				reassembledPackets++;
 				BufferMapMax.remove(bufferedData.maxIdx);
 				BufferMapMin.remove(bufferedData.minIdx);
 				
@@ -218,6 +225,7 @@ public class ReAssemblyUnit {
 						newBuffer.lengthRead = newBuffer.PacketLength;
 						System.arraycopy(frame.Data,nextPointer , newBuffer.data, 0, newBuffer.PacketLength);
 						Completed.add(newBuffer);
+						reassembledPackets++;
 						packetsLeft = true;
 						nextPointer = nextPointer + newBuffer.PacketLength;
 					}
@@ -226,6 +234,7 @@ public class ReAssemblyUnit {
 						newBuffer.lengthRead = frame.Data.length - nextPointer;
 						System.arraycopy(frame.Data, nextPointer, newBuffer.data, 0, newBuffer.lengthRead);
 						Completed.add(newBuffer);
+						reassembledPackets++;
 					}
 					else{
 						int nextCounter = (VcCounter == 255 )? 0 : VcCounter + 1;
@@ -241,6 +250,7 @@ public class ReAssemblyUnit {
 								System.arraycopy(tData, 0, tPac.data, 0, newBuffer.PacketLength);
 								BufferMapMin.remove(nextCounter);
 								Completed.add(tPac);
+								reassembledPackets++;
 							}
 							else{
 								byte [] tData = new byte[newBuffer.PacketLength];
@@ -286,8 +296,10 @@ public class ReAssemblyUnit {
 						
 							BufferMapMin.remove(nextCounter);
 							
-							if(pclen == (frame.Data.length - nextPointer + tPac.lengthRead ))
+							if(pclen == (frame.Data.length - nextPointer + tPac.lengthRead )){
 								Completed.add(tPac);
+								reassembledPackets++;
+							}
 							else{
 								tPac.lengthRead += (frame.Data.length - nextPointer);
 								if(BufferMapMax.containsKey(tPac.maxIdx)){

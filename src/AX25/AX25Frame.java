@@ -16,10 +16,10 @@ public class AX25Frame {
 	protected static byte ControlBits = 0x03;
 	
 	// Protocol Identifier (no layer 3 protocol implemented )
-	public static byte ProtocolIdentifier = (byte)0xF0; // standard value // this has been changed to implement ack option
+	public  byte ProtocolIdentifier = (byte)0xF0; // standard value // this has been changed to implement ack option
 	
 	// Information field
-	private byte[] _informationField;
+	public byte[] _informationField;
 	
 	// CRC field
 	public byte[] _crc;
@@ -61,11 +61,11 @@ public class AX25Frame {
 		}
 		
 		// checking for protocol identifier
-		if(frame[offset + 15] != AX25Frame.ProtocolIdentifier){
+		if(frame[offset + 15] != this.ProtocolIdentifier){
 			// TODO exception throw
 		}
 		// the protocol identifier field has been modified to represent if the packet is an ack packet or not
-		AX25Frame.ProtocolIdentifier = frame[offset+15];
+		this.ProtocolIdentifier = frame[offset+15];
 		
 		// information field
 		if(frame.length - offset - AX25Frame.HeaderLength > 0){
@@ -125,7 +125,7 @@ public class AX25Frame {
 		frame[14] = AX25Frame.ControlBits;
 		
 		// Protocol Identifier
-		frame[15] = AX25Frame.ProtocolIdentifier;
+		frame[15] = this.ProtocolIdentifier;
 		
 		// Information Field
 		byte[] informationField = this.GetInformationField ();
@@ -153,7 +153,7 @@ public class AX25Frame {
 		frame[14] = AX25Frame.ControlBits;
 		
 		// Protocol Identifier
-		frame[15] = AX25Frame.ProtocolIdentifier;
+		frame[15] = this.ProtocolIdentifier;
 		
 		// Information Field
 		byte[] informationField = this.GetInformationField ();

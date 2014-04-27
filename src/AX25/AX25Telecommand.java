@@ -100,7 +100,7 @@ public class AX25Telecommand extends AX25Frame {
 		frame[14] = AX25Frame.ControlBits;
 		
 		// Protocol Identifier
-		frame[15] = AX25Frame.ProtocolIdentifier;
+		frame[15] = super.ProtocolIdentifier;
 		
 		// counter
 		frame[16] = this.TCCounter;

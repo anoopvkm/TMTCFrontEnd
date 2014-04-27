@@ -1,6 +1,6 @@
 package SQLClient;
 
-import java.sql.Blob;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,6 +11,8 @@ import java.util.LinkedList;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import com.mysql.jdbc.Blob;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.ResultSet;
 
 import TMReceiver.ByteArray;
@@ -50,11 +52,15 @@ public class SQLClient {
 			  for(int i = 0;i<arcList.size();i++){
 				  Date date = new Date();
 				  Timestamp ts = new Timestamp(date.getTime());
-				  Blob b = new SerialBlob(arcList.get(i).ToByteArray());
-				//  b.setBytes(1, arcList.get(i).ToByteArray());
+				  byte [] frame = arcList.get(i).ToByteArray();
 				  
-				  String query =  "INSERT INTO AX25Telemetry (TimeStamp , Frame ) VALUES ('"+ts +"','"+  b + "') ";
-				  stmt.executeUpdate(query);
+				  
+				  String query =  "INSERT INTO AX25Telemetry (TimeStamp , Frame ) VALUES ('"+ts +"', ? ) ";
+				  
+				  java.sql.PreparedStatement pp = conn.prepareStatement(query);
+				  
+				  pp.setBytes(1, frame);
+				  pp.executeUpdate();
 				
 			  }
 		     
@@ -82,12 +88,17 @@ public class SQLClient {
 			  for(int i = 0;i<arcList.size();i++){
 				  Date date = new Date();
 				  Timestamp ts = new Timestamp(date.getTime());
-				  Blob b = new SerialBlob(arcList.get(i).ToByteArray());
-				//b.setBytes(1, arcList.get(i).ToByteArray());
-				
 				  
-				  String query =  "INSERT INTO AX25Telecommand (TimeStamp , Frame ) VALUES ('"+ts +"','"+  b + "') ";
-				  stmt.executeUpdate(query);
+				  byte [] frame = arcList.get(i).ToByteArray();
+				  
+				  
+				  String query =  "INSERT INTO AX25Telecommand (TimeStamp , Frame ) VALUES ('"+ts +"', ? ) ";
+				  
+				  java.sql.PreparedStatement pp = conn.prepareStatement(query);
+				  
+				  pp.setBytes(1, frame);
+				  pp.executeUpdate();
+				  
 				
 			  }
 		     
@@ -159,18 +170,17 @@ public class SQLClient {
 			 
 			  stmt = conn.createStatement();
 			  
-			  String query =  "SELECT * FROM AX25Telemetry WHERE Counter = 2012";
-			  java.sql.ResultSet rs = stmt.executeQuery(query);
+			  String query =  "SELECT * FROM AX25Telemetry WHERE TimeStamp >  ?  AND TimeStamp < ? ";
+			  java.sql.PreparedStatement ps = conn.prepareStatement(query);
+			  ps.setString(1, start);
+			  ps.setString(2, end);
+			  java.sql.ResultSet rs = ps.executeQuery();
 		     
 			  while (rs.next()){
-				  System.out.println("fff");
-				//(assuming you have a ResultSet named RS)
-				  Blob blob = rs.getBlob("TimeStamp");
-
-				  int blobLength = (int) blob.length();  
-				  byte[] blobAsBytes = blob.getBytes(1, blobLength);
-				  System.out.println(blobAsBytes.length);
-				  //release the blob and free up memory. (since JDBC 4.0)
+				  ByteArray tRes = new ByteArray();
+				  tRes.data = rs.getBytes("Frame");
+				  list.add(tRes);
+			
 			
 			  }
 			  conn.close();
@@ -182,5 +192,41 @@ public class SQLClient {
 		
 		
 		return list;
+	}
+	
+	// test function
+	public static void ByteArrayTest() throws SQLException{
+		 Connection conn = null;
+		  Statement stmt = null;
+		  
+		  try {
+			 
+			  Class.forName("com.mysql.jdbc.Driver");
+			  
+			  conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			 byte [] ddd = new byte[30];
+			 ddd[10] = 4;
+			  stmt = conn.createStatement();
+			  String query =  "INSERT INTO CUSTOM (ID , NAME ) VALUES (8 , ? ) ";
+			  java.sql.PreparedStatement pp = conn.prepareStatement(query);
+			  
+			  pp.setBytes(1, ddd);
+			  pp.executeUpdate();
+			  
+			  query = "SELECT * FROM CUSTOM WHERE ID = 8";
+			  pp = conn.prepareStatement(query);
+			  java.sql.ResultSet rs = pp.executeQuery();
+			  while(rs.next()){
+				  System.out.println(rs.getBytes("NAME")[10]);
+			  }
+			  
+			 
+			
+			  conn.close();
+		     
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
