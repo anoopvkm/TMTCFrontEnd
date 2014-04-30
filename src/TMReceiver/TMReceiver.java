@@ -145,6 +145,14 @@ public class TMReceiver {
 				
 				
 			}
+			else{
+				try {
+					Thread.sleep(30000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	

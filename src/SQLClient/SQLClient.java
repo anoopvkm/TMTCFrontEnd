@@ -115,19 +115,14 @@ public class SQLClient {
 	 * @param AX25TeleCommand
 	 */
 	public void ArchieveAX25TeleCommand(final AX25Telecommand Frame){
-		Thread writeToSQLThread = new Thread (new Runnable(){
-			public void run(){
-				LinkedList<AX25Telecommand> ListToWrite = new LinkedList<AX25Telecommand>();
-				ListToWrite.add(Frame);
-				try {
-					ArchieveTeleCommand(ListToWrite);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		writeToSQLThread.start();
+		LinkedList<AX25Telecommand> ListToWrite = new LinkedList<AX25Telecommand>();
+		ListToWrite.add(Frame);
+		try {
+			ArchieveTeleCommand(ListToWrite);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -135,19 +130,15 @@ public class SQLClient {
 	 * @param AX25TeleCommand
 	 */
 	public void ArchieveAX25TeleMetry(final AX25Telemetry Frame){
-		Thread writeToSQLThread = new Thread (new Runnable(){
-			public void run(){
-				LinkedList<AX25Telemetry> ListToWrite = new LinkedList<AX25Telemetry>();
-				ListToWrite.add(Frame);
-				try {
-					ArchieveTelemetry(ListToWrite);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		writeToSQLThread.start();
+
+		LinkedList<AX25Telemetry> ListToWrite = new LinkedList<AX25Telemetry>();
+		ListToWrite.add(Frame);
+		try {
+			ArchieveTelemetry(ListToWrite);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

@@ -69,9 +69,12 @@ public class AX25Frame {
 		
 		// information field
 		if(frame.length - offset - AX25Frame.HeaderLength > 0){
-			byte[] informationField = new byte[frame.length - offset - AX25Frame.HeaderLength];
-			System.arraycopy (frame, (int)(offset + AX25Frame.HeaderLength), informationField, 0, (int)(frame.length - offset - AX25Frame.HeaderLength));
+			byte[] informationField = new byte[frame.length - offset -2 - AX25Frame.HeaderLength];
+			System.arraycopy (frame, (int)(offset + AX25Frame.HeaderLength), informationField, 0, (int)(frame.length - offset - 2 - AX25Frame.HeaderLength));
+			
 			this.SetInformationField (informationField);
+			this._crc = new byte[2];
+			System.arraycopy(frame, (int)(offset+AX25Frame.HeaderLength + informationField.length), this._crc, 0, 2);
 		}
 		else{
 			this.SetInformationField (new byte[0]);

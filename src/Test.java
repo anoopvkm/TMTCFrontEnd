@@ -37,8 +37,9 @@ public class Test {
 		 FrontEnd test = new FrontEnd();
 		  
 		
-		  test.Start();
-		  test.Simulator();
+	  test.Start();
+		 test.Simulator1();
+		 // MakeTelemetryEntries();
 		  //ReassemblyUnitTest1();
 		  //ReassemblyUnitTest2();
 		  //ReassemblyUnitTest3();
@@ -326,6 +327,28 @@ public class Test {
 	  
 	  public static void BlobTests() throws SQLException{
 		
+	  }
+	  public static void MakeTelemetryEntries(){
+			AX25AddressField src = new AX25AddressField(MissionConstants.satCallsign,MissionConstants.satSSID);
+			AX25AddressField dest = new AX25AddressField(MissionConstants.gsCallsign,MissionConstants.gsSSID);
+			
+			byte [] data = new byte[10];
+			data[4] = 0;
+			data[5] = BitOperations.IntegerToUnsignedbyte8(10);
+
+			AX25Telemetry temp = new AX25Telemetry(dest, src, new AX25FrameIdentification(), (byte)1, (byte)1,(byte)0,  data, new AX25FrameStatus(), 10);
+			
+	
+		
+			
+			byte [] crc = new byte[2];
+			crc = CRC16CCITT.generateCRC(temp.ToByteArrayWithoutCRC());
+			temp._crc[0] = crc[0];
+			temp._crc[1] = crc[1];
+			
+			SQLClient _sql = new SQLClient();
+			_sql.ArchieveAX25TeleMetry(temp);
+			
 	  }
 
 }

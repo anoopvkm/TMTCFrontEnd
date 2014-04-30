@@ -149,7 +149,7 @@ public class ReplayController {
 		
 		LinkedList<ByteArray> retrieved =  new LinkedList<ByteArray>();
 		retrieved = _sqlClient.retrieveAX25Telemetry(start,end);
-		
+		System.out.println("lol");
 		LinkedList<AX25Telemetry> retrievedDecoded = new LinkedList<AX25Telemetry>();
 		for(int i =0; i<retrieved.size();i++){
 			AX25Telemetry temp = new AX25Telemetry(retrieved.get(i).data);
@@ -159,12 +159,13 @@ public class ReplayController {
 			}
 			
 		}
-		msg.setText("Number of packets : "+ retrievedDecoded.size());
+		msg.setText("Number of Frames : "+ retrievedDecoded.size());
 		ReAssemblyUnit _reassemble = new ReAssemblyUnit(vcid);
 		for(int i =0 ;i<retrievedDecoded.size();i++){
 			_reassemble.ReassemblePacket(retrievedDecoded.get(i));
 		}
-		
+		msg.append("\n Number of reassembled packets : "+_reassemble.Completed.size() );
+		System.out.println("Finished");
 	}
 	
 	

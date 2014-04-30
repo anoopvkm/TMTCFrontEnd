@@ -41,6 +41,9 @@ public class FrontEnd {
 	
 	ReplayController replayContr;
 	
+	// temporary variable to indicate if simulator should be on/off
+	boolean simulate = true;
+	
 	// constructor
 	public FrontEnd() throws FileNotFoundException, UnsupportedEncodingException{
 		Trace.WriteLine("Starting TMTC Front End .... ");
@@ -98,19 +101,21 @@ public class FrontEnd {
 		// TODO 
 		// do a test implementation here 
 		
+	
 		
 		// Simulation
-		int i = 0;
-		while(i<6){
-			i++;
-			for(int j =0;j < 5;j++){
-				ApplicationData data = new ApplicationData();
-				byte[] tem = new byte[300];
-				data.SetData(tem);
-				_transmitter.receivePacketTCTransmitter(data);
+			int i = 0;
+			while(i<6){
+				i++;
+				for(int j =0;j < 6;j++){
+					ApplicationData data = new ApplicationData();
+					byte[] tem = new byte[100];
+					data.SetData(tem);
+					_transmitter.receivePacketTCTransmitter(data);
+				}
+				Thread.sleep(180000);
 			}
-			Thread.sleep(3000);
-		}
+		
 	}
 	
 	/** 
@@ -149,20 +154,22 @@ public class FrontEnd {
 				}
 			}
 	}
+	// properly timed simulator
 	
-	public void Simulator() throws InterruptedException{
+	public void Simulator1() throws InterruptedException{
 	
 		Thread.sleep(100);
 		int  i = 0 ;
 		int count = 0;
-		while(i < 8){
+		simulate = true;
+		while(i < 2){
 			i++;
 			System.out.println("new cycle");
 			TransmitterON = true;
 			
 			beaconReceived = true;
 			
-			Thread.sleep(8000);
+			Thread.sleep(60000);
 			
 	//		System.out.println("SwitchHappening");
 			TransmitterON = false;
@@ -173,7 +180,7 @@ public class FrontEnd {
 			_receiver.receivedFrames.add(temp);
 			
 		//	System.out.println("AckReceived");
-			for(int j =0;j <20;j++){
+			for(int j =0;j <40;j++){
 				AX25AddressField src = new AX25AddressField(MissionConstants.satCallsign,MissionConstants.satSSID);
 				AX25AddressField dest = new AX25AddressField(MissionConstants.gsCallsign,MissionConstants.gsSSID);
 				byte [] data = new byte[40];
@@ -192,7 +199,7 @@ public class FrontEnd {
 				
 			}
 		
-			 Thread.sleep(10000);
+			 Thread.sleep(180000);
 			
 		}
 	}
