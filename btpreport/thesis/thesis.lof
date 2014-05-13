@@ -1,8 +1,17 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces AX.25 Transfer Frame Format\relax }}{9}{figure.caption.8}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces AX.25 Address Field\relax }}{9}{figure.caption.9}
-\contentsline {figure}{\numberline {2.3}{\ignorespaces AX.25 Telemetry Header and Trailer \relax }}{10}{figure.caption.10}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Ground Station software block diagram\relax }}{9}{figure.caption.6}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces TMTC Frontend Block Diagram\relax }}{12}{figure.caption.7}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Virtual Channel\relax }}{16}{figure.caption.13}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces AX.25 Transfer Frame Format.Adapted from \nobreakspace {}\cite {ax25}\relax }}{16}{figure.caption.8}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces AX.25 Address Field.Adapted from \nobreakspace {}\cite {ax25}\relax }}{17}{figure.caption.9}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces AX.25 Telemetry Header and Trailer \relax }}{18}{figure.caption.10}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces TC Transmitter State Diagram \relax }}{24}{figure.caption.14}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Virtual Channel. Adapted from \citep {ccsds102}\relax }}{26}{figure.caption.15}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Large Data Transfer Service. Adapted from \citep {ecss}\relax }}{28}{figure.caption.16}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Replay Controller GUI\relax }}{40}{figure.caption.32}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
 \addvspace {10\p@ }

@@ -1,0 +1,15 @@
+\BOOKMARK [2][]{Outline0.1}{Introduction}{}
+\BOOKMARK [3][]{Outline0.1.1.3}{IITMSAT}{Outline0.1}
+\BOOKMARK [3][]{Outline0.1.2.12}{Ground Station Software}{Outline0.1}
+\BOOKMARK [2][]{Outline0.2}{Telemetry/ Telecommand Frontend}{}
+\BOOKMARK [3][]{Outline0.2.1.17}{TMTC Frontend}{Outline0.2}
+\BOOKMARK [2][]{Outline0.3}{Communication Protocol}{}
+\BOOKMARK [3][]{Outline0.3.1.25}{Modified AX.25 Protocol}{Outline0.3}
+\BOOKMARK [2][]{Outline0.4}{Design}{}
+\BOOKMARK [3][]{Outline0.4.1.28}{TC Transmitter}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.2.33}{TM Receiver}{Outline0.4}
+\BOOKMARK [3][]{Outline0.4.3.34}{Replay Controller}{Outline0.4}
+\BOOKMARK [2][]{Outline0.5}{Implementation}{}
+\BOOKMARK [2][]{Outline0.6}{Testing}{}
+\BOOKMARK [2][]{Outline0.7}{Summary}{}
+\BOOKMARK [2][]{Outline0.8}{Bibliography}{}

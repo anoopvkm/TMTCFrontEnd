@@ -1,10 +1,13 @@
 package TMTCFrontEnd;
+
+import java.io.Serializable;
+
 /**
  * This class deals with application data TMTC front end receives from MCS
  * @author Anoop R Santhosh
  * @version 1.0
  */
-public class ApplicationData {
+public class ApplicationData implements Serializable{
 	private byte [] information;
 	
 	/*

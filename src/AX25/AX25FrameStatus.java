@@ -1,4 +1,7 @@
 ﻿package AX25;
+
+import Trace.Trace;
+
 /**
  * This class deals with frame identification part of AX.25 telemtry secondary packet trailer frame status bit
  * @author Anoop R Santhosh
@@ -25,8 +28,8 @@ public class AX25FrameStatus {
 
 	/**
 	 * Constructor for constructing class object from timeflag and tccounter
-	 * @param timeFlag
-	 * @param tcCounter
+	 * @param timeFlag indicates length of the time field
+	 * @param tcCounter tccounter value
 	 */
 	 public AX25FrameStatus(byte timeFlag, byte tcCounter){
           this.TimeFlag = timeFlag;
@@ -35,7 +38,7 @@ public class AX25FrameStatus {
 
 	/**
 	 * Constructor for class from a byte array
-	 * @param framebits a byte array
+	 * @param framebits a byte array of the frame status
 	 */
 	public AX25FrameStatus(byte [] framebits){
 		this(framebits,0);
@@ -43,8 +46,8 @@ public class AX25FrameStatus {
 	
 	/**
 	 * Constructor for class from a byte array and an offset into the byte array
-	 * @param framebits a byte array
-	 * @param offset: offset into the byte array
+	 * @param framebits a byte array of the frame status
+	 * @param offset offset into the byte array
 	 */
 	public AX25FrameStatus(byte [] framebits, int offset){
 		 // Time Flag
@@ -53,7 +56,7 @@ public class AX25FrameStatus {
         // Spare bits
         if (((byte)((framebits[offset] >> 2) & 0x03)) != AX25FrameStatus.SpareBits)
         {
-           // TODO exception
+        	Trace.WriteLine("[AX25FRAME] Mismatch in frame status  spare bits");
         }
 
         // TC Counter
@@ -62,7 +65,7 @@ public class AX25FrameStatus {
 	
 	/**
 	 * Function returns the length of the time field
-	 * @return length of the time field
+	 * @return int length of the time field
 	 */
     public int getTimeLength(){
         return (int)(this.TimeFlag >= 8 ? ((this.TimeFlag & 0x7) + 1) : 0);
@@ -70,7 +73,7 @@ public class AX25FrameStatus {
 	
     /**
      * Function to convert the class object to a byte array
-     * @return byte array of the object
+     * @return byte[] byte array representation  of the object
      */
     public byte[] ToByteArray(){
     	

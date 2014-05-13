@@ -1,4 +1,7 @@
 ﻿package AX25;
+
+import Trace.Trace;
+
 /**
  * This class deals with the entire AX.25 frame
  * @author Anoop R Santhosh
@@ -57,13 +60,10 @@ public class AX25Frame {
 		this._crc = new byte[2];
 		// checking for control bits
 		if(frame[offset + 15 ] != AX25Frame.ControlBits){
-			// TODO exception throw
+			Trace.WriteLine("[AX25FRAME] Mismatch in Control Bits");
 		}
 		
-		// checking for protocol identifier
-		if(frame[offset + 15] != this.ProtocolIdentifier){
-			// TODO exception throw
-		}
+		
 		// the protocol identifier field has been modified to represent if the packet is an ack packet or not
 		this.ProtocolIdentifier = frame[offset+15];
 		
@@ -97,7 +97,7 @@ public class AX25Frame {
 	 
 	/**
 	  * This  method sets the protocol identifier field - for using to identify packet type
-	  * @param type , a byte field
+	  * @param type  a byte to set the protocol identifier field
 	  */
 	 public void SetIdentifier(byte type){
 		 this.ProtocolIdentifier = type;
@@ -105,7 +105,7 @@ public class AX25Frame {
 	/**
 	 * This method gives the total length of the frame
 	 * @param 
-	 * @return length of the frame
+	 * @return int length of the frame
 	 */
 	public int getFrameLength(){
 		return (int)(AX25Frame.HeaderLength + this.GetInformationField().length);
@@ -113,7 +113,7 @@ public class AX25Frame {
 	
 	/**
 	 * This method converts the frame to a byte array
-	 * @return a byte array of the values
+	 * @return  byte[] array representation of the frame
 	 */
 	public byte[] ToByteArray() {
 		byte[] frame = new byte[this.getFrameLength()+2];
@@ -141,7 +141,7 @@ public class AX25Frame {
 	}
 	
 	/** This method converts the frame to a byte array with out crc field
-	 * @return a byte array
+	 * @return byte[] array representation of the frame without crc
 	 */
 	public byte[] ToByteArrayWithoutCRC() {
 		byte[] frame = new byte[this.getFrameLength()];
@@ -167,7 +167,7 @@ public class AX25Frame {
 	
 	/**
 	 * This method returns the information field of the byte array
-	 * @return byte array
+	 * @return byte[] information field of the frame
 	 */
 	protected byte[] GetInformationField() {
          if (this._informationField == null){

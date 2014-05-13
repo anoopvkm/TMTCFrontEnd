@@ -45,7 +45,7 @@ public class Trace {
 	/* Function to write a line to trace file
 	 * @param line , line to be written to file
 	 */
-	public static void WriteLine(String line) throws FileNotFoundException, UnsupportedEncodingException{
+	public static void WriteLine(String line) {
 		
 		cal.getTime();
     	
@@ -59,9 +59,18 @@ public class Trace {
 		else{
 			linecount = 0;
 			writer.close();
-			writer = new PrintWriter(path,"UTF-8");
-			writer.println(sdf.format(cal.getTime())+" "+line);
-			writer.flush();
+			try {
+				writer = new PrintWriter(path,"UTF-8");
+				writer.println(sdf.format(cal.getTime())+" "+line);
+				writer.flush();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.12.12)  30 APR 2014 20:20
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2013.12.12)  13 MAY 2014 11:34
 entering extended mode
  %&-line parsing enabled.
 **thesis.tex
@@ -533,47 +533,60 @@ Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
 *hyperref using driver hypertex*
 (/usr/share/texmf-texlive/tex/latex/hyperref/hypertex.def
 File: hypertex.def 2009/10/09 v6.79a Hyperref driver for HyperTeX specials
-) (./thesis.aux)
+) (./thesis.aux
+
+! Package natbib Error: Bibliography not compatible with author-year citations.
+
+(natbib)                Press <return> to continue in numerical citation style.
+
+
+See the natbib package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.161 ...and\NAT@force@numbers{}\NAT@force@numbers
+                                                  
+? 
+)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/pxmi/m/it on input line 37.
-LaTeX Font Info:    Try loading font information for OML+pxmi on input line 37.
+LaTeX Font Info:    Checking defaults for OML/pxmi/m/it on input line 38.
+LaTeX Font Info:    Try loading font information for OML+pxmi on input line 38.
 
-
-(/usr/share/texmf-texlive/tex/latex/pxfonts/omlpxmi.fd
+ (/usr/share/texmf-texlive/tex/latex/pxfonts/omlpxmi.fd
 File: omlpxmi.fd 2000/12/14 v1.0
 )
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/pxsy/m/n on input line 37.
-LaTeX Font Info:    Try loading font information for OMS+pxsy on input line 37.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/pxsy/m/n on input line 38.
+LaTeX Font Info:    Try loading font information for OMS+pxsy on input line 38.
 
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/omspxsy.fd
 File: omspxsy.fd 2000/12/14 v1.0
 )
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/pxex/m/n on input line 37.
-LaTeX Font Info:    Try loading font information for OMX+pxex on input line 37.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/pxex/m/n on input line 38.
+LaTeX Font Info:    Try loading font information for OMX+pxex on input line 38.
 
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/omxpxex.fd
 File: omxpxex.fd 2000/12/14 v1.0
 )
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/pxexa/m/n on input line 37.
-LaTeX Font Info:    Try loading font information for U+pxexa on input line 37.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/pxexa/m/n on input line 38.
+LaTeX Font Info:    Try loading font information for U+pxexa on input line 38.
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/upxexa.fd
 File: upxexa.fd 2000/12/14 v1.0
 )
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Try loading font information for OT1+pxr on input line 37.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Try loading font information for OT1+pxr on input line 38.
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/ot1pxr.fd
 File: ot1pxr.fd 2000/12/14 v1.0
@@ -621,12 +634,12 @@ driver: dvips
 -----------------------
 Package caption Info: Begin \AtBeginDocument code.
 Package caption3 Info: subfig package 1.2 or 1.3 is loaded.
-LaTeX Info: Redefining \subref on input line 37.
+LaTeX Info: Redefining \subref on input line 38.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: threeparttable package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 37.
+Package hyperref Info: Link coloring OFF on input line 38.
 (/usr/share/texmf-texlive/tex/latex/hyperref/nameref.sty
 Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
 
@@ -635,8 +648,8 @@ Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
 )
 \c@section@level=\count119
 )
-LaTeX Info: Redefining \ref on input line 37.
-LaTeX Info: Redefining \pageref on input line 37.
+LaTeX Info: Redefining \ref on input line 38.
+LaTeX Info: Redefining \pageref on input line 38.
 \AtBeginShipoutBox=\box31
 File: iitm.eps Graphic file (type eps)
  <iitm.eps> [0
@@ -644,7 +657,7 @@ File: iitm.eps Graphic file (type eps)
 ]
 Certificate
 
-Underfull \hbox (badness 10000) in paragraph at lines 73--78
+Underfull \hbox (badness 10000) in paragraph at lines 74--79
 
  []
 
@@ -653,89 +666,111 @@ Underfull \hbox (badness 10000) in paragraph at lines 73--78
 ] [1
 
 ]
-Overfull \hbox (6.77702pt too wide) in paragraph at lines 100--101
-[]\OT1/pxr/m/n/12 The main func-tion-al-ity of this mod-ule in-clude AX.25 pro-
-to-col en-cod-ing/decoding
+Overfull \hbox (11.865pt too wide) in paragraph at lines 108--109
+[]\OT1/pxr/m/n/12 The main func-tion-al-ity of this mod-ule in-cludes AX.25 pro
+-to-col en-cod-ing/decoding
  []
 
 [2
 
 ] (./thesis.toc
-LaTeX Font Info:    Try loading font information for U+pxmia on input line 8.
+LaTeX Font Info:    Try loading font information for U+pxmia on input line 6.
  (/usr/share/texmf-texlive/tex/latex/pxfonts/upxmia.fd
 File: upxmia.fd 2000/12/14 v1.0
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 8.
+LaTeX Font Info:    Try loading font information for U+msa on input line 6.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 8.
+LaTeX Font Info:    Try loading font information for U+msb on input line 6.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+pxsyc on input line 8.
+LaTeX Font Info:    Try loading font information for U+pxsyc on input line 6.
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/upxsyc.fd
 File: upxsyc.fd 2000/12/14 v1.0
 ) [3
 
-])
+] [4])
 \tf@toc=\write3
 \openout3 = `thesis.toc'.
 
- [4] (./thesis.lot)
-\tf@lot=\write4
-\openout4 = `thesis.lot'.
-
-
-[5
-
-] (./thesis.lof)
-\tf@lof=\write5
-\openout5 = `thesis.lof'.
+ [5]
+(./thesis.lof)
+\tf@lof=\write4
+\openout4 = `thesis.lof'.
 
  [6
 
 ] [7
 
-] [8
-
 ]
 CHAPTER 1.
-LaTeX Font Info:    Try loading font information for OMS+pxr on input line 170.
+[1
 
-(/usr/share/texmf-texlive/tex/latex/pxfonts/omspxr.fd
+]
+LaTeX Font Info:    Try loading font information for OMS+pxr on input line 193.
+
+ (/usr/share/texmf-texlive/tex/latex/pxfonts/omspxr.fd
 File: omspxr.fd 2000/12/14 v1.0
 )
 LaTeX Font Info:    Font shape `OMS/pxr/m/n' in size <12> not available
-(Font)              Font shape `OMS/pxsy/m/n' tried instead on input line 170.
-LaTeX Font Info:    Try loading font information for OML+pxr on input line 172.
+(Font)              Font shape `OMS/pxsy/m/n' tried instead on input line 193.
+LaTeX Font Info:    Try loading font information for OML+pxr on input line 195.
 
 
 (/usr/share/texmf-texlive/tex/latex/pxfonts/omlpxr.fd
 File: omlpxr.fd 2000/12/14 v1.0
 )
 LaTeX Font Info:    Font shape `OML/pxr/m/n' in size <12> not available
-(Font)              Font shape `OML/pxmi/m/it' tried instead on input line 172.
+(Font)              Font shape `OML/pxmi/m/it' tried instead on input line 195.
 
- [1
-
-
-] [2] [3] [4]
-CHAPTER 2.
-[5
-
-] [6]
-Underfull \hbox (badness 10000) in paragraph at lines 247--249
-[]\OT1/pxr/m/n/12 ADD IM-AGE HERE USE CASE DI-A-GRAM
- []
-
+ [2] [3]
+Missing character: There is no Ã in font pxr!
+Missing character: There is no © in font pxr!
+Missing character: There is no Ã in font pxr!
+Missing character: There is no © in font pxr!
+ [4] [5] [6]
 [7]
+CHAPTER 2.
+File: gs.eps Graphic file (type eps)
+<gs.eps> [8
+
+] [9] [10]
+File: tmtc.eps Graphic file (type eps)
+ <tmtc.eps> [11] [12]
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.300 \linebreak
+                
+? 
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.301 \textbf
+             {Replay : }As mentioned above, all raw AX.25 frames received by...
+
+? 
+[13] [14]
+CHAPTER 3.
+[15
+
+]
 File: ax25main.eps.eps Graphic file (type eps)
  <ax25main.eps.eps>
-Underfull \hbox (badness 10000) in paragraph at lines 265--272
+Underfull \hbox (badness 10000) in paragraph at lines 324--331
 
  []
 
@@ -746,13 +781,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.273 \\F
+l.332 \\F
          ew important  fields are briefly explained below :
 ? 
-[8]
+[16]
 File: addressfield.eps Graphic file (type eps)
  <addressfield.eps>
-Underfull \hbox (badness 10000) in paragraph at lines 275--282
+Underfull \hbox (badness 10000) in paragraph at lines 335--342
 
  []
 
@@ -763,71 +798,119 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.285 \begin
+l.345 \begin
             {itemize}
 ? 
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.292 ...e a 16 bit CRC. The polynomial used is x^
-                                                  {16}+x^{12}+x^{5}+1.
+l.352 ...e a 16 bit CRC. The polynomial used is x^
+                                                  {16}+x^{12}+x^{5}+1.A CRC ...
+
 ? 
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.293 
+l.353 
       
 ? 
 ! Missing } inserted.
 <inserted text> 
                 }
-l.293 
+l.353 
       
 ? 
+
+Overfull \hbox (274.85022pt too wide) in paragraph at lines 352--353
+\OT1/pxr/m/n/12 poly-no-mial used is x$[] + \OML/pxmi/m/it/12 x[] \OT1/pxr/m/n/
+12 + \OML/pxmi/m/it/12 x[] \OT1/pxr/m/n/12 + 1\OML/pxmi/m/it/12 :ACRCcheckisess
+entialforerrordetectionaftertheframereception:AframeisacceptedonlyafteraCRCchec
+k:[]$ 
+ []
+
 ! Extra }, or forgotten \endgroup.
 \par ...m \@noitemerr {\@@par }\fi \else {\@@par }
                                                   \fi 
-l.293 
+l.353 
       
 ? 
-[9]
+[17]
 File: ax25telemetry.eps Graphic file (type eps)
  <ax25telemetry.eps>
-Underfull \hbox (badness 10000) in paragraph at lines 301--307
+Underfull \hbox (badness 10000) in paragraph at lines 362--368
 
  []
 
-[10] [11]
-CHAPTER 3.
-[12
+[18] [19] [20]
+CHAPTER 4.
+[21
 
-] [13] [14]
+] [22]
+File: state.eps Graphic file (type eps)
+ <state.eps> [23] [24]
+Overfull \hbox (16.60558pt too wide) in paragraph at lines 463--464
+[]\OT1/pxr/m/n/12 When the trans-mit-ter is switched on and the state ma-chine 
+is in WAIT[]FOR[]TRANS
+ []
+
 File: vc.eps Graphic file (type eps)
- <vc.eps> [15]
-Underfull \hbox (badness 10000) in paragraph at lines 404--406
+<vc.eps> [25] [26] [27]
+File: largedata.eps Graphic file (type eps)
+ <largedata.eps> [28] [29] [30]
+CHAPTER 5.
+[31
 
+] [32] [33] [34] [35]
+Overfull \hbox (7.70293pt too wide) in paragraph at lines 631--632
+[]\OT1/pxr/m/n/12 OutStandingPacketMap : A java HashMap stor-ing out-stand-ing 
+frames, hashed
  []
 
-[16] [17] [18] [19]
-APPENDIX A.
-[20
+[36] [37] [38] [39]
 
-] [21
+! LaTeX Error: Cannot determine size of graphic in replay.pdf (no BoundingBox).
+
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.686 \includegraphics[scale = 0.8]{replay.pdf}
+                                               
+? 
+File: replay.pdf Graphic file (type eps)
+<replay.pdf> [40] [41] [42]
+CHAPTER 6.
+[43
 
 ]
-No file thesis.bbl.
-(./thesis.aux)
+Overfull \hbox (8.62814pt too wide) in paragraph at lines 746--747
+\OT1/pxr/m/n/12 Matching of val-ues of all the fields in-di-cates that AX.25 Te
+leme-try en-cod-ing/decoding
+ []
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+[44] [45]
+CHAPTER 7.
+[46
 
- ) 
+]
+APPENDIX A.
+[47
+
+]
+Missing character: There is no â in font pxr!
+Missing character: There is no € in font pxr!
+Missing character: There is no ” in font pxr!
+ [48
+
+] (./thesis.aux) ) 
 Here is how much of TeX's memory you used:
- 7146 strings out of 495062
- 102375 string characters out of 1182643
- 175596 words of memory out of 3000000
- 10182 multiletter control sequences out of 15000+50000
- 15712 words of font info for 51 fonts, out of 3000000 for 9000
+ 7171 strings out of 495062
+ 102744 string characters out of 1182643
+ 177596 words of memory out of 3000000
+ 10206 multiletter control sequences out of 15000+50000
+ 15210 words of font info for 50 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 43i,5n,41p,1210b,498s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 43i,5n,41p,1145b,418s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on thesis.dvi (31 pages, 48480 bytes).
+Output written on thesis.dvi (57 pages, 107732 bytes).

@@ -50,7 +50,7 @@ public class ReAssemblyUnit {
 				ReAssembleBuffer temp = BufferMapMax.get(PrevCounter);
 				if(temp.PacketLength != 0){
 					int PacketLen = temp.PacketLength;
-					int maxRead = (PacketLen-temp.lengthRead) < 502 ? PacketLen - temp.lengthRead : 502;
+					int maxRead = (PacketLen-temp.lengthRead) < 251 ? PacketLen - temp.lengthRead : 251;
 					
 					System.arraycopy(frame.Data, 0 ,temp.data, temp.lengthRead, maxRead);
 					temp.lengthRead = temp.lengthRead + maxRead;
@@ -76,7 +76,7 @@ public class ReAssemblyUnit {
 						byteLen[1] = frame.Data[5 - temp.lengthRead];
 						temp.PacketLength = BitOperations.UnsignedBytetoInteger16(byteLen);
 						
-						int maxRead = (temp.PacketLength - temp.lengthRead) < 502 ? temp.PacketLength - temp.lengthRead : 502;
+						int maxRead = (temp.PacketLength - temp.lengthRead) < 251 ? temp.PacketLength - temp.lengthRead : 251;
 						byte [] tmpArray = new byte[temp.PacketLength];
 						System.arraycopy(frame.Data, 0 ,tmpArray, temp.lengthRead, maxRead);
 						System.arraycopy(temp.data, 0, tmpArray, 0, temp.lengthRead);
@@ -98,7 +98,7 @@ public class ReAssemblyUnit {
 						}
 						
 					}else{
-						int maxRead = ( frame.Data.length < 502) ? frame.Data.length : 502 ; // TODO check this
+						int maxRead = ( frame.Data.length < 251) ? frame.Data.length : 251 ; // TODO check this
 						byte [] tmpArray = new byte[maxRead];
 						System.arraycopy(frame.Data, 0 , tmpArray, 0, maxRead);
 						byte [] tmpArray2 = new byte[temp.data.length + maxRead];
@@ -139,7 +139,7 @@ public class ReAssemblyUnit {
 				newBuffer.minIdx = VcCounter;
 				newBuffer.maxIdx = VcCounter;
 				newBuffer.middle = true;
-				int maxRead = ( frame.Data.length < 502) ? frame.Data.length : 502 ;
+				int maxRead = ( frame.Data.length < 251) ? frame.Data.length : 251 ;
 				newBuffer.data = new byte[maxRead];
 				newBuffer.lengthRead = maxRead;
 				System.arraycopy(frame.Data, 0, newBuffer.data, 0,maxRead);
@@ -147,7 +147,7 @@ public class ReAssemblyUnit {
 				BufferMapMax.put(VcCounter, newBuffer);
 			}
 			else if( minFlag && maxFlag){
-				int maxRead = ( frame.Data.length < 502) ? frame.Data.length : 502 ;
+				int maxRead = ( frame.Data.length < 251) ? frame.Data.length : 251 ;
 				ReAssembleBuffer firstBuffer = BufferMapMax.get(VcCounter);
 				ReAssembleBuffer secondBuffer = BufferMapMin.get(VcCounter);
 				ReAssembleBuffer newBuffer = new ReAssembleBuffer();

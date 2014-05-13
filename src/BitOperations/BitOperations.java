@@ -9,9 +9,10 @@ public class BitOperations {
 	/**
 	 * Function for converting a byte to unsigned binary string
 	 * @param number The byte to be converted
-	 * @return String 
+	 * @return String string representation of the number
 	 */
 	public static String byteToBinaryString8(byte number){
+		
 		if(number >= 0 && number <=127 ){
 			String temp = Integer.toBinaryString(number);
 			int no_zero = 8 -temp.length();
@@ -40,8 +41,8 @@ public class BitOperations {
 	
 	/**
 	 * Function for converting an unsigned byte to an integer
-	 * @param number
-	 * @return integer
+	 * @param number the byte to be converted to integere
+	 * @return integer the byte in integer
 	 */
 	public static int UnsignedBytetoInteger8(byte number){
 		String Trep = byteToBinaryString8(number);
@@ -50,8 +51,8 @@ public class BitOperations {
 	
 	/**
 	 * Function for converting a 16 bit number to an unsignedinterger
-	 * @param byte []
-	 * @ return integer
+	 * @param byte [] byte value of the number
+	 * @ return integer value of the number
 	 */
 	public static int UnsignedBytetoInteger16(byte [] number){
 		String s1 = byteToBinaryString8(number[0]);

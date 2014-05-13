@@ -1,4 +1,7 @@
 ﻿package AX25;
+
+import Trace.Trace;
+
 /**
  * This class deals with frame identification part of AX.25 telemetry secondary packet header
  * @author Anoop R Santhosh
@@ -47,12 +50,12 @@ public class AX25FrameIdentification {
 		
 		 // Version number
 		 if (((byte)(framePart[offset] >> 6)) != AX25FrameIdentification.VersionNumber){
-              // TODO add exception 
+			 Trace.WriteLine("[AX25FRAME] Mismatch frame identification version number");
          }
 		 
 		 // Spare bits
 		 if (((byte)(framePart[offset] & 0x07)) != AX25FrameIdentification.SpareBits){
-              // TODO add exception
+			 Trace.WriteLine("[AX25FRAME] Mismatch in frame identification spare bits");
          }
 		 
          this.VirtualChannelID = (byte)((framePart[offset] >> 3) & 0x07);
@@ -60,7 +63,7 @@ public class AX25FrameIdentification {
 	
 	/**
 	 * Function returns a byte array for the frame identification part
-	 * @return byte array
+	 * @return byte[] the byte array representation of the object
 	 */
 	public byte[] ToByteArray(){
 		

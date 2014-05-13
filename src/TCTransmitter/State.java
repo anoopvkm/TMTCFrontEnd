@@ -1,5 +1,9 @@
 package TCTransmitter;
-
+/**
+ * Represents the states of the TCTransmitter state machine
+ * @author anoop
+ *
+ */
 public enum State {
 
 	READY,

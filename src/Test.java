@@ -18,6 +18,8 @@ import com.mysql.jdbc.Blob;
 
 import ReplayController.ReplayController;
 import SQLClient.SQLClient;
+import Simulators.GSSimulator;
+import Simulators.MCSSimulator;
 import TMReceiver.ReAssemblyUnit;
 import TMTCFrontEnd.FrontEnd;
 import TMTCFrontEnd.MissionConstants;
@@ -34,12 +36,43 @@ public class Test {
 
 	  public static void main(String a[]) throws SQLException, InterruptedException, IOException {
 		  Trace.SetTraceFile("/home/anoop/blah");
-		 FrontEnd test = new FrontEnd();
-		  
 		
-	  test.Start();
-		 test.Simulator1();
-		 // MakeTelemetryEntries();
+
+		 
+		 final MCSSimulator mcsSim = new MCSSimulator();
+		 final GSSimulator gsSim = new GSSimulator();
+		 
+	
+		 Thread GSSim1 = new Thread(new Runnable(){
+				public void run(){
+					
+						gsSim.ListenToTMTC();
+					
+				}
+			});
+		 GSSim1.start();
+		
+		 final FrontEnd test = new FrontEnd();
+		 test.Start();
+		
+		 Thread GSSim2 = new Thread(new Runnable(){
+				public void run(){
+					
+						gsSim.SendToTMTC();
+					
+				}
+			});
+		GSSim2.start();
+		
+		 Thread MCSSim = new Thread(new Runnable(){
+				public void run(){
+					mcsSim.StartSimulation();
+				}
+			});
+		MCSSim.start();
+		// test.Simulator1();
+		
+		//  MakeTelemetryEntries();
 		  //ReassemblyUnitTest1();
 		  //ReassemblyUnitTest2();
 		  //ReassemblyUnitTest3();
@@ -51,7 +84,7 @@ public class Test {
 		 // ReadingFromSQLtest();
 		  //BlobTests();
 	//	  SQLClient.ByteArrayTest();
-	//	  ReplayContollerTests();
+		//  ReplayContollerTests();
 	 // PacketCreationTests();
 	  }
 	  public static void ReplayContollerTests(){
@@ -313,7 +346,7 @@ public class Test {
 		  tFrame3.FirstHeaderPointer = BitOperations.IntegerToUnsignedbyte8(255);
 		  byte[] data3 = new byte[10];
 		  data3[0] = BitOperations.IntegerToUnsignedbyte8(9);
-		  tFrame3.VirtualChannelFrameCount = 1;
+		  tFrame3.VirtualChannelFrameCount = 4;
 		  tFrame3.SetDataField(data3);
 		  SQLClient tem = new SQLClient();
 		  System.out.println(tFrame3.ToByteArray()[14]);

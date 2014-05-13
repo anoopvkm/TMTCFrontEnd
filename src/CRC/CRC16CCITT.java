@@ -20,6 +20,11 @@ package CRC;
  */
 public class CRC16CCITT { 
 
+	/**
+	 * this function generates crc for data byte array
+	 * @param data the byte array of which we want to calculate cc
+	 * @return byte[] CRC value
+	 */
     public static byte[] generateCRC(byte [] data) { 
         int crc = 0xFFFF;          // initial value
         int polynomial = 0x1021;   // 0001 0000 0010 0001  (0, 5, 12) 

@@ -1,6 +1,8 @@
 package TMTCFrontEnd;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import AX25.AX25AddressField;
 import AX25.AX25FrameIdentification;
@@ -8,12 +10,13 @@ import AX25.AX25Telemetry;
 import CRC.CRC16CCITT;
 import RouterClient.Simulator;
 import java.io.UnsupportedEncodingException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import ReplayController.ReplayController;
 import RouterClient.RouterClient;
 import SQLClient.SQLClient;
 import TCTransmitter.TCTransmitter;
-import TMReceiver.ByteArray;
 import TMReceiver.TMReceiver;
 import Trace.Trace;
 /**
@@ -46,7 +49,8 @@ public class FrontEnd {
 	
 	// constructor
 	public FrontEnd() throws FileNotFoundException, UnsupportedEncodingException{
-		Trace.WriteLine("Starting TMTC Front End .... ");
+		
+		Trace.WriteLine("[FRONTEND] Starting TMTC Front End .... ");
 		
 		_transmitter = new TCTransmitter();
 		
@@ -64,7 +68,10 @@ public class FrontEnd {
 	 * Starts all threads
 	 */
 	public void Start(){
+		
 		// Thread which listens to MCS for packets
+		Trace.WriteLine("[FRONTEND] Starting listen to MCS Thread");
+		
 		Thread MCSListener = new Thread(new Runnable() {
 			public void run(){
 				try {
@@ -76,13 +83,42 @@ public class FrontEnd {
 			}
 		});
 		MCSListener.start();
+		
+		// Thread to listen to ground station
+		Trace.WriteLine("[FRONTEND] Starting Listen to GS thread");
+		
+		Thread GSListener = new Thread(new Runnable() {
+			public void run(){
+				ListenToGS();
+			}
+		});
+		GSListener.start();
+		
+		// Thread which handles the main controller
+		Trace.WriteLine("[FRONTEND] Starting the frotnend controller thread");
+		
 		Thread ControllerThread = new Thread(new Runnable(){
 			public void run(){
 				ControlOperations();
 			}
 		});
 		ControllerThread.start();
+		
+		// Thread which swictches between transmitter and receiver
+		Thread TransmitterThread = new Thread(new Runnable(){
+			public void run(){
+				try {
+					TransmitterSwitch();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		TransmitterThread.start();
 
+		// Thread which handles the replay controller
+		Trace.WriteLine("[FRONTEND] Starting the replay controller");
 		Thread ReplayControllerThread = new Thread(new Runnable() {
 			public void run(){
 				replayContr = new ReplayController();
@@ -90,40 +126,85 @@ public class FrontEnd {
 			}
 		});
 		ReplayControllerThread.start();
+		
+		
 		_receiver.start();
 	}
 	/**
-	 * function which listens to MCS system 
+	 * Function which listens to MCS system on port 4445
 	 * @throws InterruptedException 
 	 * 
 	 */
 	private  void ListenToMCS() throws InterruptedException{
-		// TODO 
-		// do a test implementation here 
-		
 	
 		
 		// Simulation
-			int i = 0;
-			while(i<6){
-				i++;
-				for(int j =0;j < 6;j++){
+		// listens to MCS on  a socket 
+		try {
+			ServerSocket serverSocket = new ServerSocket(4445);
+			Socket socket = serverSocket.accept();
+			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+			while(true){
+				
+				if(inStream != null){
 					ApplicationData data = new ApplicationData();
-					byte[] tem = new byte[100];
-					data.SetData(tem);
+					data = (ApplicationData)inStream.readObject();
 					_transmitter.receivePacketTCTransmitter(data);
 				}
-				Thread.sleep(180000);
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	/**
+	 * Function to listen to GS on a socket on port 4446
+	 * 
+	 */
+	private void ListenToGS(){
+		// Simulation
+		try {
+			ServerSocket serverSocket = new ServerSocket(4446);
+			Socket socket = serverSocket.accept();
+			ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
+			while(true){
+						
+				if(inStream != null){
+					ByteArray data = new ByteArray();
+					data = (ByteArray)inStream.readObject();
+					_receiver.receivedFrames.add(data);
+				}
+			}
+		} catch (IOException e) {
+					// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+			
 		
 	}
 	
 	/** 
-	 * Function which controlls the operations of the TMTC front end
+	 * Function which controls the operations of the TMTC front end
 	 */
 	private void ControlOperations(){
+		
+			// an infinite loop which checks various flags and passes messages from receiver to transmitter. 
 			while(true){
 				
+				if(_receiver.AckReceived){
+					_receiver.AckReceived = false;
+					_transmitter.receiveAck(_receiver.curAck.Data);
+				}
 				
 				if(this.TransmitterON){
 			
@@ -144,6 +225,11 @@ public class FrontEnd {
 				
 				
 				while(this.TransmitterON){
+					if(_receiver.AckReceived){
+						_receiver.AckReceived = false;
+						_transmitter.receiveAck(_receiver.curAck.Data);
+					}
+					
 					if(this.beaconReceived){
 						System.out.print("Done");
 						this.beaconReceived = false;
@@ -154,8 +240,10 @@ public class FrontEnd {
 				}
 			}
 	}
-	// properly timed simulator
 	
+	// properly timed simulator. Unused as of now. 
+	// Left behind for easy future testing
+	// simulates operations of GS / satellite
 	public void Simulator1() throws InterruptedException{
 	
 		Thread.sleep(100);
@@ -175,11 +263,13 @@ public class FrontEnd {
 			TransmitterON = false;
 			beaconReceived = false;
 			
+			// generating acknowledgement
 			ByteArray temp = new ByteArray();
 			temp.data = Simulator.GetAck().ToByteArray();
 			_receiver.receivedFrames.add(temp);
 			
 		//	System.out.println("AckReceived");
+			// generating packets
 			for(int j =0;j <40;j++){
 				AX25AddressField src = new AX25AddressField(MissionConstants.satCallsign,MissionConstants.satSSID);
 				AX25AddressField dest = new AX25AddressField(MissionConstants.gsCallsign,MissionConstants.gsSSID);
@@ -209,11 +299,15 @@ public class FrontEnd {
 	 * @throws InterruptedException 
 	 */
 	public void TransmitterSwitch() throws InterruptedException{
+		// transmitter is switched on for 1 min
+		// transmitter is switched off for 3 min
 		while(true){
 			TransmitterON = true;
-			Thread.sleep(1000);
+			beaconReceived = true;
+			Thread.sleep(60000);
 			TransmitterON= false;
-			Thread.sleep(2000);
+			beaconReceived = false;
+			Thread.sleep(180000);
 		}
 	}
 }

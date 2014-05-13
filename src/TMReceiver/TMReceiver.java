@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 import SQLClient.SQLClient;
+import TMTCFrontEnd.ByteArray;
 import TMTCFrontEnd.MissionConstants;
 
 import AX25.AX25Telemetry;
@@ -58,6 +59,7 @@ public class TMReceiver {
 		_sqlClient = new SQLClient();
 		AckReceived = false;
 		
+		// for UI
 		msgFrame = new JFrame("Receiver Messages ");
 		msg = new JTextArea();
 		msg.setColumns(70);
@@ -88,16 +90,7 @@ public class TMReceiver {
 		return false;
 	}
 	
-	/**
-	 * Function to listen to GS on a socket
-	 * 
-	 */
-	private void ListenToGS(){
-		// TODO write the socket code here
-		while(true){
-			// TODO add it to incoming telemetryqueue.
-		}
-	}
+	
 	
 	/**
 	 * Function which does all operations on the received packets
@@ -109,6 +102,8 @@ public class TMReceiver {
 			
 
 				ByteArray frame = receivedFrames.poll();
+				
+				// crc check
 				if(!checkCRC(frame.data)){
 				
 					String errmsg = "Packet Dropped : CRC Check failed";
@@ -118,23 +113,30 @@ public class TMReceiver {
 
 				final AX25Telemetry DecodedFrame = acceptPacket(frame.data);
 	
+				// address checks
 				if(!checkSRCandDESTAddr(DecodedFrame)){
-					// TODO trace
+					String errmsg = "Packet Dropped : address mismatch";
+					AnnounceMessage(errmsg);
 					continue;
 				}
 				
+				// archiving packet
 				ArchieveTelemetry(DecodedFrame);
 		
+				// checking if the frame is an acknowledgment frame. 
 				if(DecodedFrame.ProtocolIdentifier == 0x03){
 					curAck = DecodedFrame;
 					
 					AckReceived =  true;
+					AnnounceMessage("Ack Received ");
 					continue;
 				}
 				
 		
+				// adding to queue of packets to be acknowledged 
 				addToAckQueue(DecodedFrame);
 			
+				// passing packet to virtual channels
 				AnnounceMessage("Packet "+ BitOperations.UnsignedBytetoInteger8(DecodedFrame.MasterFrameCount));
 				Thread VCsplitThread = new Thread (new Runnable () {
 					public void run(){
@@ -161,12 +163,7 @@ public class TMReceiver {
 	 * 
 	 */
 	public void start(){
-		Thread GSListenerThread = new Thread (new Runnable () {
-			public void run(){
-				ListenToGS();
-			}
-		});
-		GSListenerThread.start();
+		
 		Thread ReceiverMainThread = new Thread ( new Runnable () {
 			public void run(){
 				ReceiverController();

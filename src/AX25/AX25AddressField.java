@@ -15,8 +15,9 @@ public class AX25AddressField {
 	
 	// SSID Mask
     private static final byte SSIDMask = 0;
+    
 	/**
-	 * AX.25 Adrress Field constructor 
+	 * AX.25 Address Field constructor  without any arguments
 	 */
 	public AX25AddressField(){
 		this.CallSign = "000000";
@@ -24,7 +25,7 @@ public class AX25AddressField {
 	}
 	
 	/**
-	 * AX.25 Adrress Field constructor 
+	 * AX.25 Address Field constructor 
 	 * @param callSign the call sign of the address field
 	 * @param ssid Secondary Station Identifier
 	 */
@@ -34,7 +35,7 @@ public class AX25AddressField {
 	}
 	
 	/**
-	 * AX.25 Adrress Field constructor to construct from a byte array
+	 * AX.25 Adrress Field constructor to construct address field from a byte array
 	 * @param framePart byte array of the frame
 	 */
 	public AX25AddressField(byte[] framePart){
@@ -62,12 +63,12 @@ public class AX25AddressField {
 		//SSID
 		this.Ssid = (byte)((framePart[offset + 6]>>1) & 0xF);
 	}
+	
 	/**
 	 * Create a byte array for the address field object
 	 * @param sourceAddress true indicates its user needs a source address
-	 * @return byte array 
+	 * @return byte[] the byte array representation of the address field 
 	 */
-	
 	public byte[] ToByteArray(boolean sourceAddress){
         // Call Sign
         byte[] tmp = new byte[7];

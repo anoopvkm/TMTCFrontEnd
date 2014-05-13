@@ -15,12 +15,17 @@ import com.mysql.jdbc.Blob;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.ResultSet;
 
-import TMReceiver.ByteArray;
+import TMTCFrontEnd.ByteArray;
 
 
 import AX25.AX25Telecommand;
 import AX25.AX25Telemetry;
 
+/**
+ * This class handles all SQL operations
+ * @author anoop
+ *
+ */
 public class SQLClient {
 
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
@@ -32,8 +37,8 @@ public class SQLClient {
 	
 	/**
 	 * Function to archieve Telemtery packets
-	 * Writes to AX
-	 * @param arcList
+	 * Writes to AX25Telemetry table
+	 * @param arcList list of frames to be written to database
 	 * @throws SQLException
 	 */
 	public void ArchieveTelemetry(LinkedList<AX25Telemetry> arcList) throws SQLException{
@@ -57,6 +62,7 @@ public class SQLClient {
 				  
 				  String query =  "INSERT INTO AX25Telemetry (TimeStamp , Frame ) VALUES ('"+ts +"', ? ) ";
 				  
+				  
 				  java.sql.PreparedStatement pp = conn.prepareStatement(query);
 				  
 				  pp.setBytes(1, frame);
@@ -72,6 +78,11 @@ public class SQLClient {
 		}
 	}
 	
+	/**
+	 * Function to write telecommands ton AX25Telecommand table in database
+	 * @param arcList list of telecommands to be written
+	 * @throws SQLException
+	 */
 	public void ArchieveTeleCommand(LinkedList<AX25Telecommand> arcList) throws SQLException{
 		  Connection conn = null;
 		  Statement stmt = null;
@@ -84,7 +95,7 @@ public class SQLClient {
 			 
 			  stmt = conn.createStatement();
 			  
-			  System.out.println(arcList.size());
+		
 			  for(int i = 0;i<arcList.size();i++){
 				  Date date = new Date();
 				  Timestamp ts = new Timestamp(date.getTime());
@@ -112,7 +123,7 @@ public class SQLClient {
 	
 	/**
 	 * Function to write a Single AX25 TelecommanPacket
-	 * @param AX25TeleCommand
+	 * @param AX25TeleCommand frame to be written to database
 	 */
 	public void ArchieveAX25TeleCommand(final AX25Telecommand Frame){
 		LinkedList<AX25Telecommand> ListToWrite = new LinkedList<AX25Telecommand>();
@@ -127,7 +138,7 @@ public class SQLClient {
 	
 	/**
 	 * Function to write a Single AX25 TelecommanPacket
-	 * @param AX25TeleCommand
+	 * @param AX25TeleCommand frame to be written to database
 	 */
 	public void ArchieveAX25TeleMetry(final AX25Telemetry Frame){
 
@@ -145,7 +156,7 @@ public class SQLClient {
 	 * Function to return list of arrays which comes in a time range
 	 * @param start , the start timestamp
 	 * @param end, the end timestamp
-	 * @return List of bytearrays 
+	 * @return LinkedList of bytearrays 
 	 * @throws SQLException 
 	 */
 	public LinkedList<ByteArray> retrieveAX25Telemetry(String start, String end) throws SQLException{

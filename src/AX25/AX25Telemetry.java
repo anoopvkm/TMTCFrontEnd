@@ -40,17 +40,22 @@ public class AX25Telemetry extends AX25Frame{
 	
 	/**
 	 * Constrcutor for AX 25 Telemetry class from a byte array
-	 * @param frame AX.25 frame
+	 * @param frame AX.25 frame in byte array
 	 */
 	public AX25Telemetry(byte [] frame){
 		super(frame);
-		if(this.ProtocolIdentifier == 0x03){
 		
+		
+		if(this.ProtocolIdentifier == 0x03){
+			
+			// in case of acknowledgement frames
 			int DataLen = this.GetInformationField().length - 4 ;
 			this.Data = new byte[DataLen];
 			System.arraycopy(this.GetInformationField(), 4 , this.Data, 0, DataLen);
 		}
 		else{
+			
+			// handling telemetry header in case of normal telemetry frames
 			this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
 			this.MasterFrameCount = (this.GetInformationField())[1];
 			this.VirtualChannelFrameCount = (this.GetInformationField())[2];
@@ -64,18 +69,21 @@ public class AX25Telemetry extends AX25Frame{
 	
 	/**
 	 * Constructor for AX 25 Telemetry clas from a byte array and an offset
-	 * @param frame AX.25 frame
+	 * @param frame AX.25 frame in byte array
 	 * @param offset offset into the byte array
 	 */
 	public AX25Telemetry(byte [] frame,int offset){
 		super(frame,offset);
+		
 		if(this.ProtocolIdentifier == 0x03){
 			
+			// in case of acknowledgement frames
 			int DataLen = this.GetInformationField().length - 4 ;
 			this.Data = new byte[DataLen];
 			System.arraycopy(this.GetInformationField(), 0 , this.Data, 0, DataLen);
 		}
 		else{
+			// handling telemetry header in case of normal telemetry frames
 			this.FrameIdentification = new AX25FrameIdentification(this.GetInformationField());
 			this.MasterFrameCount = (this.GetInformationField())[1];
 			this.VirtualChannelFrameCount = (this.GetInformationField())[2];
@@ -93,10 +101,10 @@ public class AX25Telemetry extends AX25Frame{
 	 * @param frameIdentification Frame Identification value 
 	 * @param masterFrameCount Master Frame Count
 	 * @param virtualChannelFrameCount Virtual Channel Frame count
-	 * @param firstHeaderPointer : First Header Pointer 
-	 * @param data : Data Field 
-	 * @param frameStatus : Frame status 
-	 * @param time : time field 
+	 * @param firstHeaderPointer  First Header Pointer 
+	 * @param data  Data Field 
+	 * @param frameStatus  Frame status 
+	 * @param time  time field 
 	 */
 	public AX25Telemetry(AX25AddressField dstAddress, AX25AddressField srcAddress, AX25FrameIdentification frameIdentification, byte masterFrameCount, byte virtualChannelFrameCount, byte firstHeaderPointer, byte[] data, AX25FrameStatus frameStatus, long time){
 	          

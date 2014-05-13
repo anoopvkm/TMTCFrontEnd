@@ -1,9 +1,7 @@
 \BOOKMARK [0][-]{chapter*.1}{ACKNOWLEDGEMENTS}{}
 \BOOKMARK [0][-]{chapter*.2}{ABSTRACT}{}
-\BOOKMARK [0][-]{chapter*.4}{LIST OF TABLES}{}
-\BOOKMARK [0][-]{chapter*.5}{LIST OF FIGURES}{}
-\BOOKMARK [0][-]{chapter*.6}{ABBREVIATIONS}{}
-\BOOKMARK [0][-]{chapter*.7}{NOTATION}{}
+\BOOKMARK [0][-]{chapter*.4}{LIST OF FIGURES}{}
+\BOOKMARK [0][-]{chapter*.5}{ABBREVIATIONS}{}
 \BOOKMARK [0][-]{chapter.1}{INTRODUCTION}{}
 \BOOKMARK [1][-]{section.1.1}{Overview and Problem Statement}{chapter.1}
 \BOOKMARK [2][-]{subsection.1.1.1}{Overview of IITMSAT }{section.1.1}
@@ -15,11 +13,12 @@
 \BOOKMARK [0][-]{chapter.2}{BACKGROUND AND PROTOCOLS}{}
 \BOOKMARK [1][-]{section.2.1}{Ground Station Software}{chapter.2}
 \BOOKMARK [1][-]{section.2.2}{TMTC Frontend}{chapter.2}
-\BOOKMARK [1][-]{section.2.3}{Data Link Layer Protocol - \040Modified AX.25 Frame structure }{chapter.2}
-\BOOKMARK [2][-]{subsection.2.3.1}{Modified AX.25 Frame }{section.2.3}
-\BOOKMARK [2][-]{subsection.2.3.2}{Telecommand Information Field Usage }{section.2.3}
-\BOOKMARK [2][-]{subsection.2.3.3}{Telemetry Information Field Usage }{section.2.3}
-\BOOKMARK [2][-]{subsection.2.3.4}{Acknowledgement Frame }{section.2.3}
+\BOOKMARK [1][-]{section.2.3}{Link Budget }{chapter.2}
+\BOOKMARK [1][-]{section.2.4}{Data Link Layer Protocol - \040Modified AX.25 Frame structure }{chapter.2}
+\BOOKMARK [2][-]{subsection.2.4.1}{Modified AX.25 Frame }{section.2.4}
+\BOOKMARK [2][-]{subsection.2.4.2}{Telecommand Information Field Usage }{section.2.4}
+\BOOKMARK [2][-]{subsection.2.4.3}{Telemetry Information Field Usage }{section.2.4}
+\BOOKMARK [2][-]{subsection.2.4.4}{Acknowledgement Frame }{section.2.4}
 \BOOKMARK [0][-]{chapter.3}{DESIGN OF TMTC FRONTEND}{}
 \BOOKMARK [1][-]{section.3.1}{AX.25 Packet encoding / decoding }{chapter.3}
 \BOOKMARK [1][-]{section.3.2}{TC Transmitter}{chapter.3}
@@ -30,4 +29,26 @@
 \BOOKMARK [2][-]{subsection.3.3.2}{Large Data Transfer and Reassembly Unit}{section.3.3}
 \BOOKMARK [2][-]{subsection.3.3.3}{Overall design of TM Reeciver}{section.3.3}
 \BOOKMARK [1][-]{section.3.4}{Replay Controller}{chapter.3}
-\BOOKMARK [0][-]{appendix.A}{A SAMPLE APPENDIX}{}
+\BOOKMARK [0][-]{chapter.4}{IMPLEMENTATION DETAILS}{}
+\BOOKMARK [1][-]{section.4.1}{Development Tools and Environment }{chapter.4}
+\BOOKMARK [1][-]{section.4.2}{Development phases}{chapter.4}
+\BOOKMARK [1][-]{section.4.3}{AX.25 encoding/decoding}{chapter.4}
+\BOOKMARK [2][-]{subsection.4.3.1}{AX25Frame}{section.4.3}
+\BOOKMARK [2][-]{subsection.4.3.2}{AX25Telecommand}{section.4.3}
+\BOOKMARK [2][-]{subsection.4.3.3}{AX25Telemetry}{section.4.3}
+\BOOKMARK [2][-]{subsection.4.3.4}{AX25AddressField}{section.4.3}
+\BOOKMARK [2][-]{subsection.4.3.5}{AX25FrameIdentification}{section.4.3}
+\BOOKMARK [2][-]{subsection.4.3.6}{AX25FrameStatus}{section.4.3}
+\BOOKMARK [1][-]{section.4.4}{Telecommand Transmitter}{chapter.4}
+\BOOKMARK [1][-]{section.4.5}{Telemetry Receiver }{chapter.4}
+\BOOKMARK [1][-]{section.4.6}{Replay Controller}{chapter.4}
+\BOOKMARK [1][-]{section.4.7}{Archiving Frames }{chapter.4}
+\BOOKMARK [0][-]{chapter.5}{TESTING}{}
+\BOOKMARK [1][-]{section.5.1}{AX.25 encoding/decoding tests}{chapter.5}
+\BOOKMARK [1][-]{section.5.2}{Reassembly Unit tests}{chapter.5}
+\BOOKMARK [1][-]{section.5.3}{Replay Controller}{chapter.5}
+\BOOKMARK [1][-]{section.5.4}{Receiver and Transmitter }{chapter.5}
+\BOOKMARK [0][-]{chapter.6}{CONCLUSION AND FUTURE WORK }{}
+\BOOKMARK [1][-]{section.6.1}{Current State}{chapter.6}
+\BOOKMARK [1][-]{section.6.2}{Future tasks}{chapter.6}
+\BOOKMARK [0][-]{section.6.2}{Bibliography}{}

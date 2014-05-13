@@ -1,5 +1,9 @@
 package TCTransmitter;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -15,6 +19,7 @@ import CRC.CRC16CCITT;
 import RouterClient.Simulator;
 import SQLClient.SQLClient;
 import TMTCFrontEnd.ApplicationData;
+import TMTCFrontEnd.ByteArray;
 import TMTCFrontEnd.MissionConstants;
 
 /**
@@ -64,7 +69,9 @@ public class TCTransmitter {
 	JFrame msgFrame ;
 	JTextArea msg;
 	
-	
+	// socket connection
+	Socket socket = null;
+	ObjectOutputStream outputStream = null;
 	public TCTransmitter(){
 
 		state = State.WAIT_FOR_TRANS;
@@ -78,6 +85,7 @@ public class TCTransmitter {
 		recvFrames = new LinkedBlockingQueue<Integer>();
 		validAck = false;
 		
+		// for temporary dialog box
 		msgFrame = new JFrame("Transmitter Messages ");
 		msg = new JTextArea();
 		msg.setColumns(70);
@@ -86,6 +94,22 @@ public class TCTransmitter {
         msgFrame.setSize(350,300);
         msgFrame.add(msg);
         msgFrame.setVisible(true);
+        
+        // for socket connection
+        Socket socket;
+		try {
+			socket = new Socket("localHost", 4447);
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 
+        
+        
 	}
 	
 	/*
@@ -177,6 +201,7 @@ public class TCTransmitter {
 								
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
 									OutStandingPacketMap.clear();
+									AnnounceMessage("Ack received. Going to WAIT_FOR_TRANS state");
 									this.state = State.WAIT_FOR_TRANS;
 									break;
 									
@@ -197,11 +222,13 @@ public class TCTransmitter {
 		switch(state){
 			case WAIT_FOR_ACK :		ResendPacketQueue.clear();
 									ResendPacketQueue.addAll(OutStandingPacketMap.values());
-									ConstructAck();
+									ConstructAck(); // function called to construct ack
+									AnnounceMessage("Transmitter Switched ON. Going to READY state");
 									this.state = State.READY;
 									break;
 									
 			case WAIT_FOR_TRANS:  	ConstructAck();
+									AnnounceMessage("Transmitter Switched ON. Going to READY state");
 									this.state = State.READY;
 									break;
 			default : // TODO 
@@ -251,6 +278,7 @@ public class TCTransmitter {
 		}
 		//to hold the packets which cannot be send bcoz another packet of same counter was sent already
 		LinkedList<AX25Telecommand> HoldList = new LinkedList<AX25Telecommand>();
+		
 		// resend packets
 		while(!ResendPacketQueue.isEmpty()){
 			
@@ -292,24 +320,33 @@ public class TCTransmitter {
 		EncodedPacketQueue.addAll(HoldList);
 		HoldList.clear();
 			
+		AnnounceMessage("Packets Dispatched. Going to WAIT_FOR_ACK state");
 		this.state = State.WAIT_FOR_ACK;
 		
 	}
 	
 	/**
-	 * Function to drop packets at the socket
+	 * Function to drop packets at the socket on port 4457
+	 * @param Frame AX25Telecommand frame
 	 */
 	private void dropToSocket(AX25Telecommand Frame){
 		// TODO
 		if(Frame.ProtocolIdentifier == 0x03){
 			AnnounceMessage("Ack ");
-		}else
-		{
+		}
+		else{
 			AnnounceMessage("PacketSend "+" "+BitOperations.UnsignedBytetoInteger8(Frame.TCCounter));
 		
-	
-			// simulation 
-		Simulator.recpacks.add(Frame.GetCounter());
+			// Dropping to socket
+			ByteArray temp = new ByteArray();
+			temp.data = Frame.ToByteArray();
+			try {
+				outputStream.writeObject(temp);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	

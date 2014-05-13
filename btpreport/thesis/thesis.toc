@@ -1,35 +1,92 @@
 \contentsline {chapter}{ACKNOWLEDGEMENTS}{i}{chapter*.1}
 \contentsline {chapter}{ABSTRACT}{ii}{chapter*.2}
-\contentsline {chapter}{LIST OF TABLES}{v}{chapter*.4}
-\contentsline {chapter}{LIST OF FIGURES}{vi}{chapter*.5}
-\contentsline {chapter}{ABBREVIATIONS}{vii}{chapter*.6}
-\contentsline {chapter}{NOTATION}{viii}{chapter*.7}
+\contentsline {chapter}{LIST OF FIGURES}{vi}{chapter*.4}
+\contentsline {chapter}{ABBREVIATIONS}{vii}{chapter*.5}
 \contentsline {chapter}{\numberline {1}INTRODUCTION}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Overview and Problem Statement}{1}{section.1.1}
-\contentsline {subsection}{\numberline {1.1.1}Overview of IITMSAT }{1}{subsection.1.1.1}
-\contentsline {subsection}{\numberline {1.1.2}Ground Station Software}{2}{subsection.1.1.2}
-\contentsline {subsection}{\numberline {1.1.3}TMTC Frontend - The problem statement}{2}{subsection.1.1.3}
-\contentsline {section}{\numberline {1.2}Motivation}{3}{section.1.2}
-\contentsline {section}{\numberline {1.3}Contributions of this work}{3}{section.1.3}
-\contentsline {section}{\numberline {1.4}Organisation of report}{4}{section.1.4}
-\contentsline {chapter}{\numberline {2}BACKGROUND AND PROTOCOLS}{5}{chapter.2}
-\contentsline {section}{\numberline {2.1}Ground Station Software}{5}{section.2.1}
-\contentsline {section}{\numberline {2.2}TMTC Frontend}{7}{section.2.2}
-\contentsline {section}{\numberline {2.3}Data Link Layer Protocol - \\ Modified AX.25 Frame structure }{7}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Modified AX.25 Frame }{8}{subsection.2.3.1}
-\contentsline {subsection}{\numberline {2.3.2}Telecommand Information Field Usage }{10}{subsection.2.3.2}
-\contentsline {subsection}{\numberline {2.3.3}Telemetry Information Field Usage }{10}{subsection.2.3.3}
-\contentsline {subsubsection}{Secondary Header (32 bits) }{10}{section*.11}
-\contentsline {subsubsection}{Trailer (0 to 72 bits ) }{11}{section*.12}
-\contentsline {subsection}{\numberline {2.3.4}Acknowledgement Frame }{11}{subsection.2.3.4}
-\contentsline {chapter}{\numberline {3}DESIGN OF TMTC FRONTEND}{12}{chapter.3}
-\contentsline {section}{\numberline {3.1}AX.25 Packet encoding / decoding }{12}{section.3.1}
-\contentsline {section}{\numberline {3.2}TC Transmitter}{12}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Limitations of Swiss cube design}{13}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Modified Design}{13}{subsection.3.2.2}
-\contentsline {section}{\numberline {3.3}Telemetry Receiver}{15}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Virtual Channels}{15}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Large Data Transfer and Reassembly Unit}{17}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}Overall design of TM Reeciver}{18}{subsection.3.3.3}
-\contentsline {section}{\numberline {3.4}Replay Controller}{19}{section.3.4}
-\contentsline {chapter}{\numberline {A}A SAMPLE APPENDIX}{20}{appendix.A}
+\contentsline {section}{\numberline {1.1}An introduction to IITMSAT }{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}An overview of Ground Station software}{2}{section.1.2}
+\contentsline {section}{\numberline {1.3}TMTC Frontend - The problem statement}{3}{section.1.3}
+\contentsline {section}{\numberline {1.4}Motivation}{3}{section.1.4}
+\contentsline {section}{\numberline {1.5}SwissCube - a similar satellite mission}{5}{section.1.5}
+\contentsline {section}{\numberline {1.6}Contributions of this work}{5}{section.1.6}
+\contentsline {section}{\numberline {1.7}Organisation of report}{7}{section.1.7}
+\contentsline {chapter}{\numberline {2}BACKGROUND DETAILS}{8}{chapter.2}
+\contentsline {section}{\numberline {2.1}Ground Station Software}{8}{section.2.1}
+\contentsline {section}{\numberline {2.2}TMTC Frontend}{11}{section.2.2}
+\contentsline {section}{\numberline {2.3}Link Budget }{14}{section.2.3}
+\contentsline {chapter}{\numberline {3}COMMUNICATION PROTOCOL}{15}{chapter.3}
+\contentsline {section}{\numberline {3.1}Standard AX.25 protocol}{15}{section.3.1}
+\contentsline {section}{\numberline {3.2}Modified AX.25 frame structure for IITMSAT }{16}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Modified AX.25 Frame }{16}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Telecommand Information Field Usage }{17}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Telemetry Information Field Usage }{18}{subsection.3.2.3}
+\contentsline {subsubsection}{Secondary Header (32 bits) }{18}{section*.11}
+\contentsline {subsubsection}{Information Field(0 - 2008 bits)}{19}{section*.12}
+\contentsline {subsubsection}{Trailer (0 to 72 bits ) }{19}{section*.13}
+\contentsline {subsection}{\numberline {3.2.4}Acknowledgement Frame }{19}{subsection.3.2.4}
+\contentsline {chapter}{\numberline {4}DESIGN OF TMTC FRONTEND}{21}{chapter.4}
+\contentsline {section}{\numberline {4.1}AX.25 Packet encoding / decoding }{21}{section.4.1}
+\contentsline {section}{\numberline {4.2}TC Transmitter}{22}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Limitations of Swiss cube design}{22}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Modified Design}{22}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}Telemetry Receiver}{25}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Virtual Channels}{25}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Large Data Transfer and Reassembly Unit}{27}{subsection.4.3.2}
+\contentsline {subsubsection}{Reassembly Unit}{29}{section*.17}
+\contentsline {subsection}{\numberline {4.3.3}Overall design of TM Reeciver}{29}{subsection.4.3.3}
+\contentsline {section}{\numberline {4.4}Replay Controller}{29}{section.4.4}
+\contentsline {chapter}{\numberline {5}IMPLEMENTATION DETAILS}{31}{chapter.5}
+\contentsline {section}{\numberline {5.1}Development Tools and Environment }{31}{section.5.1}
+\contentsline {section}{\numberline {5.2}Development phases}{31}{section.5.2}
+\contentsline {section}{\numberline {5.3}AX.25 encoding/decoding}{32}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}AX25AddressField}{32}{subsection.5.3.1}
+\contentsline {subsubsection}{Fields}{32}{section*.18}
+\contentsline {subsubsection}{Methods}{32}{section*.19}
+\contentsline {subsection}{\numberline {5.3.2}AX25FrameIdentification}{33}{subsection.5.3.2}
+\contentsline {subsubsection}{Fields}{33}{section*.20}
+\contentsline {subsubsection}{Methods}{33}{section*.21}
+\contentsline {subsection}{\numberline {5.3.3}AX25FrameStatus}{33}{subsection.5.3.3}
+\contentsline {subsubsection}{Fields}{33}{section*.22}
+\contentsline {subsubsection}{Methods}{34}{section*.23}
+\contentsline {subsection}{\numberline {5.3.4}AX25Frame}{34}{subsection.5.3.4}
+\contentsline {subsubsection}{Fields}{34}{section*.24}
+\contentsline {subsubsection}{Methods}{34}{section*.25}
+\contentsline {subsection}{\numberline {5.3.5}AX25Telecommand}{35}{subsection.5.3.5}
+\contentsline {subsection}{\numberline {5.3.6}AX25Telemetry}{35}{subsection.5.3.6}
+\contentsline {subsubsection}{Fields}{35}{section*.26}
+\contentsline {section}{\numberline {5.4}Telecommand Transmitter}{36}{section.5.4}
+\contentsline {subsection}{\numberline {5.4.1}State}{36}{subsection.5.4.1}
+\contentsline {subsection}{\numberline {5.4.2}TCTransmitter}{36}{subsection.5.4.2}
+\contentsline {subsubsection}{Fields}{36}{section*.27}
+\contentsline {subsubsection}{Methods}{37}{section*.28}
+\contentsline {section}{\numberline {5.5}Telemetry Receiver }{37}{section.5.5}
+\contentsline {subsection}{\numberline {5.5.1}ReAssemblyUnit}{38}{subsection.5.5.1}
+\contentsline {subsection}{\numberline {5.5.2}TMReceiver}{38}{subsection.5.5.2}
+\contentsline {subsubsection}{Fields}{38}{section*.29}
+\contentsline {subsubsection}{Methods}{39}{section*.30}
+\contentsline {section}{\numberline {5.6}Replay Controller}{39}{section.5.6}
+\contentsline {subsubsection}{Methods}{40}{section*.31}
+\contentsline {section}{\numberline {5.7}SQL Client}{40}{section.5.7}
+\contentsline {subsubsection}{Methods}{40}{section*.33}
+\contentsline {section}{\numberline {5.8}TMTC Frontend}{41}{section.5.8}
+\contentsline {subsection}{\numberline {5.8.1}FrontEnd}{41}{subsection.5.8.1}
+\contentsline {subsubsection}{Methods}{41}{section*.34}
+\contentsline {chapter}{\numberline {6}TESTING}{43}{chapter.6}
+\contentsline {section}{\numberline {6.1}Unit Testing}{43}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}AX.25 Telecommand}{43}{subsection.6.1.1}
+\contentsline {subsubsection}{Procedure}{43}{section*.35}
+\contentsline {subsubsection}{Comments}{44}{section*.36}
+\contentsline {subsubsection}{Result}{44}{section*.37}
+\contentsline {subsection}{\numberline {6.1.2}AX.25 Telemetry}{44}{subsection.6.1.2}
+\contentsline {subsubsection}{Procedure}{44}{section*.38}
+\contentsline {subsubsection}{Comments}{44}{section*.39}
+\contentsline {subsubsection}{Result}{45}{section*.40}
+\contentsline {subsection}{\numberline {6.1.3}Replay Controller}{45}{subsection.6.1.3}
+\contentsline {subsubsection}{Procedure}{45}{section*.41}
+\contentsline {subsubsection}{Comments}{45}{section*.42}
+\contentsline {subsubsection}{Result}{45}{section*.43}
+\contentsline {chapter}{\numberline {7}CONCLUSION AND FUTURE WORK }{46}{chapter.7}
+\contentsline {section}{\numberline {7.1}Current State}{46}{section.7.1}
+\contentsline {section}{\numberline {7.2}Future tasks}{46}{section.7.2}
+\contentsline {chapter}{\numberline {A}ASSUMPTIONS}{47}{appendix.A}
+\contentsline {chapter}{Bibliography}{48}{appendix.A}
